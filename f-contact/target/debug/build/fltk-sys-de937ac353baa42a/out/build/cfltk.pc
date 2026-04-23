@@ -1,0 +1,15 @@
+prefix="/home/jhon/Projects/F-contact_/F-contact/f-contact/target/debug/build/fltk-sys-de937ac353baa42a/out"
+exec_prefix="${prefix}"
+libdir="${prefix}/lib"
+includedir="${prefix}/include"
+
+Name: cfltk
+Description: C Bindings for FLTK
+URL: https://github.com/MoAlyousef/cfltk
+Version: 1.5.22
+
+Requires:
+Requires.private:  x11 xinerama xcursor xfixes xext xrender xft fontconfig cairo pango pangoxft pangocairo gobject-2.0 wayland-client wayland-cursor xkbcommon
+Cflags: -I"${includedir}" 
+Libs: -L"${libdir}" -lcfltk
+Libs.private: -L"${libdir}" -lcfltk -lfltk -lfltk_images -lfltk_jpeg -lfltk_png -lfltk_z -ldbus-1 -lsupc++ -ldl -pthread
