@@ -5,12 +5,12 @@ fn main() {
     let app = app::App::default();
     let (screen_w, screen_h) = app::screen_size();
 
-    let mut wind = Window::new(0, 0, screen_w as i32 - 100, screen_h  as i32 - 200, "Contactos");
+    let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, "Contactos");
 
 
     let pack_x = 200;
     let pack_y = 16;
-    let btn_size = 70;
+    let btn_size = 50;
     let input_w = 600;
 
     let height = btn_size;
@@ -21,7 +21,7 @@ fn main() {
 
     // Boton para agregar
     let mut add_button = Button::new(0, 0, btn_size, height, "@+");
-    add_button.set_label_size(36);
+    add_button.set_label_size(20);
 
 
     // Input de busqueda   se pretende buscar contactos o palabras claves que coincidan
@@ -38,7 +38,7 @@ fn main() {
     cat_label.set_label_size(18);
 
     let mut choice = Choice::new(0, 0, 120, height - 10, ""); // ancho 120, altura ajustada al pack
-    choice.add_choice("Choice 1|Choice 2|Choice 3");
+    choice.add_choice("Choice 1|Choice 2|Choice 3");  // aqui van las categorias
 	choice.set_value(0);
 
 
