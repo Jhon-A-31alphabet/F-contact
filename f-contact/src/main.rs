@@ -1,5 +1,7 @@
 use fltk::{app, prelude::*, window::Window, button::Button, input::Input, group::{Pack, PackType},menu::Choice,enums::FrameType, frame::Frame};
 use fltk_table::{SmartTable, TableOpts};
+mod add_contacts_window;
+use crate::add_contacts_window::add_contact_window;
 
 fn main() {
 
@@ -82,9 +84,15 @@ fn main() {
 
 
 
-
     wind.end();
     wind.show();
+
+    add_button.set_callback(|_| {
+        add_contact_window();
+    });
+
+
     app.run().unwrap();
+
 }
 
