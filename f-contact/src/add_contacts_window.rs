@@ -1,13 +1,24 @@
 use fltk::{prelude::*, *,group::Pack,
-    enums::{Align},input::Input};
+    enums::{Align},input::Input,button::Button};
 use fltk::menu::Choice;
 
 
 pub fn add_contact_window(){
 
-    let mut win = window::Window::default().with_size(500,450).with_label("Agregar contactos");
-    let mut pack = Pack::new(160, 40, 280, 400, "");
+    let mut win = window::Window::default().with_size(600,500).with_label("Agregar contactos");
+    win.make_modal(true);
+
+    let mut guardar_btn = Button::new(20, 10, 100, 50, "@filesave");
+    guardar_btn.set_label_size(20);
+
+    let mut cancelar_btn = Button::new(130, 10, 100, 50, "Salir");
+    cancelar_btn.set_label_size(20);
+
+
+
+    let mut pack = Pack::new(160, 70, 280, 400, "");
     pack.set_spacing(20); // Espacio entre cada fila
+
 
     // 1. Nombre
     let mut inp_nombre = Input::default().with_size(0, 35).with_label("Nombre:");
@@ -35,7 +46,11 @@ pub fn add_contact_window(){
     cho_cat.add_choice("Personal|Trabajo|Estudiante|Otros");
     cho_cat.set_value(0);
 
+
+
     pack.end();
+
+
 
 
     win.end();
