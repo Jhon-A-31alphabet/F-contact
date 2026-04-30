@@ -3,26 +3,49 @@ use fltk::{prelude::*, *,group::Pack,
 use fltk::menu::Choice;
 
 
+
+struct PackSize{
+	_x : u32,
+	_y : u32,
+	pack_width: u64,
+	pack_height:u64,
+}
+
+
+
+
 pub fn add_contact_window(){
+
+	let  pack_size_ = PackSize
+	{
+	_x:160,
+	_y : 70,
+	pack_width :280,
+	pack_height : 400
+	};
+
 
     let mut win = window::Window::default().with_size(600,500).with_label("Agregar contactos");
     win.make_modal(true);
 
-    let mut guardar_btn = Button::new(20, 10, 100, 50, "@filesave");
-    guardar_btn.set_label_size(20);
+    let mut save_btn = Button::new(20, 10, 100, 50, "@filesave");
+    save_btn.set_label_size(20);
 
-    let mut cancelar_btn = Button::new(130, 10, 100, 50, "Salir");
-    cancelar_btn.set_label_size(20);
+    let mut cancel_btn = Button::new(130, 10, 100, 50, "Salir");
+    cancel_btn.set_label_size(20);
 
 
 
-    let mut pack = Pack::new(160, 70, 280, 400, "");
+    let mut pack = Pack::new(pack_size_._x.try_into().unwrap(),
+    pack_size_._y.try_into().unwrap(),
+    pack_size_.pack_width.try_into().unwrap(),
+    pack_size_.pack_height.try_into().unwrap(), "");
     pack.set_spacing(20); // Espacio entre cada fila
 
 
     // 1. Nombre
-    let mut inp_nombre = Input::default().with_size(0, 35).with_label("Nombre:");
-    inp_nombre.set_align(Align::Left); // Label a la izquierda
+    let mut inp_name = Input::default().with_size(0, 35).with_label("Nombre:");
+    inp_name.set_align(Align::Left); // Label a la izquierda
 
     // 2. Descripción
     let mut inp_desc = Input::default().with_size(0, 35).with_label("Descripción:");
