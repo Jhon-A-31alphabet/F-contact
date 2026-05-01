@@ -1,7 +1,9 @@
 use fltk::{app, prelude::*, window::Window, button::Button, input::Input, group::{Pack, PackType},menu::Choice,enums::FrameType, frame::Frame};
 use fltk_table::{SmartTable, TableOpts};
+use fltk::enums::CallbackTrigger;
 mod add_contacts_window;
 use crate::add_contacts_window::add_contact_window;
+
 
 fn main() {
 
@@ -75,9 +77,27 @@ fn main() {
 		});
 		(&mut table).set_col_header_height(32);
 		(&mut table).set_col_width(1,250);
-				(&mut table).set_col_width(0,250);
-						(&mut table).set_col_width(2,250);
-								(&mut table).set_col_width(3,250);
+		(&mut table).set_col_width(0,250);
+		(&mut table).set_col_width(2,250);
+		(&mut table).set_col_width(3,250);
+
+
+		//click dado una celda ///
+
+		table.set_trigger(CallbackTrigger::Release);
+		table.set_callback(move |t|{
+		if let fltk::table::TableContext::Cell=t.callback_context(){
+		let _row = t.callback_row();
+		let _col = t.callback_col();
+		println!("{} - {}",_row+1,_col+1);
+
+
+
+								}
+		});
+
+
+
 
 
 

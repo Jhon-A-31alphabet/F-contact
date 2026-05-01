@@ -4,12 +4,14 @@ use fltk::menu::Choice;
 
 
 
+
 struct PackSize{
 	_x : u32,
 	_y : u32,
 	pack_width: u64,
 	pack_height:u64,
 }
+
 
 
 
