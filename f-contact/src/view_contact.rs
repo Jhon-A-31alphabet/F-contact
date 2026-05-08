@@ -14,8 +14,8 @@ pub fn view_and_edit_contact_win(){
 
     // 4: Todos los widgets encerrados en un frame de tipo embossed frame
     // Se utiliza un Group para agrupar visualmente con un marco.
-    let mut marco = Group::new(10, 10, 530, 430, "");
-    marco.set_frame(FrameType::EmbossedFrame);
+    let mut marco_visualizacion = Group::new(10, 10, 530, 430, "");
+    marco_visualizacion.set_frame(FrameType::EmbossedFrame);
 
     // 5: Botones superiores (Label con los íconos internos de FLTK)
     let mut btn_editar = Button::new(20, 20, 30, 30, "@filesaveas");
@@ -41,7 +41,7 @@ pub fn view_and_edit_contact_win(){
     inp_organizacion.set_align(Align::Left);
     inp_correo.set_align(Align::Left);
 
-    // Widget text: 30 pixeles más delgado que la ventana (550 - 30 = 520)
+
     let mut txt_adicional = MultilineInput::new(15, 280, 520, 140, "");
 
     // Habilitar el modo lectura inicialmente para todo
@@ -53,13 +53,13 @@ pub fn view_and_edit_contact_win(){
     inp_correo.set_readonly(true);
     txt_adicional.set_readonly(true);
 
-    marco.end();
+    marco_visualizacion.end();
     view_and_edit_w.end();
 
     view_and_edit_w.show();
          view_and_edit_w.make_modal(true);
 
-    // Lógica pura de la Interfaz Gráfica para alternar el modo edición
+
     btn_editar.set_callback(move |_| {
         // Se habilitan todos para escritura, excepto el código
         inp_nombre.set_readonly(false);

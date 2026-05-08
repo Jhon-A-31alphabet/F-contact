@@ -1,6 +1,8 @@
 use fltk::{prelude::*, *,group::Pack,
     enums::{Align},input::Input,button::Button};
 use fltk::menu::Choice;
+use fltk::enums::FrameType;
+use fltk::group::Group;
 
 
 
@@ -30,10 +32,13 @@ pub fn add_contact_window(){
     let mut win = window::Window::default().with_size(600,500).with_label("Agregar contactos");
     win.make_modal(true);
 
-    let mut save_btn = Button::new(20, 10, 100, 50, "@filesave");
+    let mut frame_add_contact = Group::new(10, 10, 530, 430, "");
+    frame_add_contact.set_frame(FrameType::EmbossedFrame);
+
+    let mut save_btn = Button::new(20, 20, 30, 30, "@filesave");
     save_btn.set_label_size(20);
 
-    let mut cancel_btn = Button::new(130, 10, 100, 50, "Salir");
+    let mut cancel_btn = Button::new(60, 20, 30, 30, "@returnarrow");
     cancel_btn.set_label_size(20);
 
 
@@ -74,6 +79,7 @@ pub fn add_contact_window(){
 
 
     pack.end();
+    frame_add_contact.end();
 
 
 

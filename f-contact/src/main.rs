@@ -28,7 +28,7 @@ fn main() {
     let (center_frame_w,center_frame_h) =(screen_w as i32 -300 ,screen_h as i32 -250 ); //tamano del frame
 
     let mut center_frame = Frame::default().with_size(center_frame_w,center_frame_h).center_of(&wind);
-    center_frame.set_frame(FrameType::EngravedBox);
+    center_frame.set_frame(FrameType::EmbossedFrame);
 
 
 
