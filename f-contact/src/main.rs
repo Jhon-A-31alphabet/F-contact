@@ -3,6 +3,11 @@ use fltk_table::{SmartTable, TableOpts};
 use fltk::enums::CallbackTrigger;
 mod add_contacts_window;
 use crate::add_contacts_window::add_contact_window;
+mod view_contact;
+use crate::view_contact::view_and_edit_contact_win;
+
+
+
 
 
 fn main() {
@@ -84,17 +89,18 @@ fn main() {
 
 		//click dado una celda ///
 
-		table.set_trigger(CallbackTrigger::Release);
-		table.set_callback(move |t|{
-		if let fltk::table::TableContext::Cell=t.callback_context(){
-		let _row = t.callback_row();
-		let _col = t.callback_col();
-		println!("{} - {}",_row+1,_col+1);
+		//table.set_trigger(CallbackTrigger::Release);
+		//table.set_callback(move |t|{
+		//if let fltk::table::TableContext::Cell=t.callback_context(){
+		//let _row = t.callback_row();
+		//let _col = t.callback_col();
+
+		//view_and_edit_contact_win();
 
 
 
-								}
-		});
+							//	}
+		//});
 
 
 
@@ -110,6 +116,22 @@ fn main() {
     add_button.set_callback(|_| {
         add_contact_window();
     });
+
+        table.set_trigger(CallbackTrigger::Release);
+		table.set_callback(move |t|{
+		if let fltk::table::TableContext::Cell=t.callback_context(){
+
+		if fltk::app::event() == fltk::enums::Event::Released {
+
+			if  fltk::app::event_clicks()  {
+					//let _row = t.callback_row();
+					//let _col = t.callback_col();
+					view_and_edit_contact_win();			}
+					}
+		}
+	});
+
+
 
 
     app.run().unwrap();
