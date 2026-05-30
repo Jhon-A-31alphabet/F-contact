@@ -5,7 +5,7 @@ mod add_contacts_window;
 use crate::add_contacts_window::add_contact_window;
 mod view_contact;
 use crate::view_contact::view_and_edit_contact_win;
-
+use fltk_theme::{ColorTheme, color_themes};
 
 
 
@@ -15,6 +15,8 @@ fn main() {
 
     let app = app::App::default();
     let (screen_w, screen_h) = app::screen_size();
+    let color_theme = ColorTheme::new(color_themes::TAN_THEME);
+    color_theme.apply(); //
 
     let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, "Contactos"); // el tamano dependera de la resolucion
     //de la pantalla del usuario //

@@ -15,9 +15,6 @@ struct PackSize{
 }
 
 
-
-
-
 pub fn add_contact_window(){
 
 	let  pack_size_ = PackSize
