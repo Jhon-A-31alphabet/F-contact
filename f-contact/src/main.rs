@@ -16,7 +16,7 @@ fn main() {
     let app = app::App::default();
     let (screen_w, screen_h) = app::screen_size();
     let color_theme = ColorTheme::new(color_themes::TAN_THEME);
-    color_theme.apply(); //
+    color_theme.apply(); // color del tema aplicado....
 
     let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, "Contactos"); // el tamano dependera de la resolucion
     //de la pantalla del usuario //
@@ -89,20 +89,9 @@ fn main() {
 		(&mut table).set_col_width(3,250);
 
 
-		//click dado una celda ///
-
-		//table.set_trigger(CallbackTrigger::Release);
-		//table.set_callback(move |t|{
-		//if let fltk::table::TableContext::Cell=t.callback_context(){
-		//let _row = t.callback_row();
-		//let _col = t.callback_col();
-
-		//view_and_edit_contact_win();
 
 
 
-							//	}
-		//});
 
 
 
@@ -119,6 +108,9 @@ fn main() {
         add_contact_window();
     });
 
+
+    //clicks una vez presionado una celda...
+
         table.set_trigger(CallbackTrigger::Release);
 		table.set_callback(move |t|{
 		if let fltk::table::TableContext::Cell=t.callback_context(){
@@ -126,8 +118,7 @@ fn main() {
 		if fltk::app::event() == fltk::enums::Event::Released {
 
 			if  fltk::app::event_clicks()  {
-					//let _row = t.callback_row();
-					//let _col = t.callback_col();
+
 					view_and_edit_contact_win();			}
 					}
 		}

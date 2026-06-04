@@ -1,0 +1,35 @@
+branch := "main"
+
+
+# Instala las depencias partiendo del archivo Cargo.toml
+setup:
+	@echo  "-- installing dependencies  --"
+	@cd src
+	@cargo fetch
+
+# Hace el commit y lo despliega a la rama main. Ejemplo :just deploy <commit>
+deploy commit:
+	@git commit -m "{{commit}}"
+	@git push origin {{branch}}
+	@echo " Deploying commit "
+
+
+# se mueve a la carpeta src y luego compila el codigo
+build:
+	@cd src
+	@cargo build
+
+#Ejecuta el projecto desde target
+run:
+	@cargo run .
+
+
+#actualiza las dependencias del proyecto..
+update:
+	cargo update
+
+# Trae los cambios de la rama actual y los fusiona automaticamente
+pull:
+	git pull
+
+
