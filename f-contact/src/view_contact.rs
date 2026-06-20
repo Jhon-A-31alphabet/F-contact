@@ -8,6 +8,8 @@ use fltk::{
     window::Window,
 };
 
+
+
 pub fn view_and_edit_contact_win(){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
@@ -70,3 +72,5 @@ pub fn view_and_edit_contact_win(){
         txt_adicional.set_readonly(false);
     });
 }
+
+

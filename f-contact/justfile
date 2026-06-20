@@ -9,9 +9,10 @@ setup:
 
 # Hace el commit y lo despliega a la rama main. Ejemplo :just deploy <commit>
 deploy commit:
+	@echo " Deploying commit "
 	@git commit -m "{{commit}}"
 	@git push origin {{branch}}
-	@echo " Deploying commit "
+
 
 
 # se mueve a la carpeta src y luego compila el codigo
