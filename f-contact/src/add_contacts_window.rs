@@ -3,8 +3,10 @@ use fltk::{prelude::*, *,group::Pack,
 use fltk::menu::Choice;
 use fltk::enums::FrameType;
 use fltk::group::Group;
+use fltk::dialog;
 
-
+use crate::database;
+use database::service::{init_db,insert_contact};  // importar el servicio base de datos
 
 
 struct PackSize{
@@ -25,6 +27,20 @@ pub fn add_contact_window(){
 	pack_height : 400
 	};
 
+	let db_path_ = "contactos.db";
+
+
+    let conn = match init_db(db_path_) {
+        Ok(c) => {
+           c
+        }
+        Err(e) => {
+            eprintln!("Error al inicializar la base de datos: {}", e);
+            return;
+        }
+    };
+
+
 
     let mut win = window::Window::default().with_size(600,500).with_label("Agregar contactos");
     win.make_modal(true);
@@ -32,12 +48,15 @@ pub fn add_contact_window(){
     let mut frame_add_contact = Group::new(10, 10, 530, 430, "");
     frame_add_contact.set_frame(FrameType::EmbossedFrame);
 
-    let mut save_btn = Button::new(20, 20, 30, 30, "@filesave");
+
+
+   let mut save_btn = Button::new(20, 20, 30, 30, "@filesave");
     save_btn.set_label_size(20);
+
+
 
     let mut cancel_btn = Button::new(60, 20, 30, 30, "@returnarrow");
     cancel_btn.set_label_size(20);
-
 
 
     let mut pack = Pack::new(pack_size_._x.try_into().unwrap(),
@@ -75,14 +94,40 @@ pub fn add_contact_window(){
 
 
 
+
+
+
+
     pack.end();
     frame_add_contact.end();
-
-
-
 
     win.end();
     win.show();
 
+    // lee los inputs y guarda el contacto
+	save_btn.set_callback(move |save_btn|{
+	match insert_contact(
+        &conn,
+        &inp_name.value(),
+        &cho_cat.value(),
+        &inp_desc.value(),
+        &inp_tel.value(),
+        &inp_org.value(),
+        &inp_email.value(),
+    ) {
+        Ok(_) => {
+            // Reemplazamos println por un diálogo de información
+            dialog::message(0, 0, "¡Contacto guardado exitosamente!");
+        }
+        Err(e) => {
+            // Reemplazamos eprintln por un diálogo de alerta de error
+            dialog::alert(0, 0, &format!("Error al guardar el contacto:\n{}", e));
+        }
+    }
+    });
+
+
+
 
 }
+

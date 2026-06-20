@@ -1,3 +1,5 @@
+#[warn(unused_variables)]
+
 use fltk::{app, prelude::*, window::Window, button::Button, input::Input, group::{Pack, PackType},menu::Choice,enums::FrameType, frame::Frame};
 use fltk_table::{SmartTable, TableOpts};
 use fltk::enums::CallbackTrigger;
@@ -8,9 +10,24 @@ use crate::view_contact::view_and_edit_contact_win;
 use fltk_theme::{ColorTheme, color_themes};
 
 
+mod database;
+use database::service::{init_db};
+
+
 
 
 fn main() {
+	let db_path = "contactos.db";
+    let _conn = match init_db(db_path) {
+        Ok(c) => {
+            c
+        }
+        Err(e) => {
+         eprintln!("Error al inicializar la base de datos: {}", e);
+            return;
+        }
+    };
+
 
 
     let app = app::App::default();
@@ -74,7 +91,7 @@ fn main() {
 
 
     let mut table = SmartTable::default()
-		.with_size(1000,450)
+		.with_size(1000,400)
 		.center_of_parent()
 		.with_opts(TableOpts{
 		rows: 30,
