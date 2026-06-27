@@ -11,7 +11,12 @@ use fltk_theme::{ColorTheme, color_themes};
 
 
 mod database;
-use database::service::{init_db};
+use database::service::{init_db,fetch_all};
+
+
+
+
+
 
 
 
@@ -95,7 +100,7 @@ fn main() {
 		.center_of_parent()
 		.with_opts(TableOpts{
 		rows: 30,
-        cols: 4,
+        cols: 7,
         editable: false,
         ..Default::default()
 		});
@@ -105,12 +110,30 @@ fn main() {
 		(&mut table).set_col_width(2,250);
 		(&mut table).set_col_width(3,250);
 
+		match fetch_all(&_conn){
+		Ok(lista_contactos)=>{
+		for (row_index, c) in lista_contactos.iter().enumerate() {
+            // Desestructuramos las referencias de la tupla `c`
+            let (id, nombre, categoria, descripcion, telefono, organizacion, email) = c;
+            let row = row_index as i32;
+
+            // Insertamos cada campo en su respectiva columna (0 a 6)
+            table.set_cell_value(row, 0, &id.to_string());
+            table.set_cell_value(row, 1, nombre);
+            table.set_cell_value(row, 2, categoria);
+            table.set_cell_value(row, 3, telefono);
+            table.set_cell_value(row, 4, organizacion);
+            table.set_cell_value(row, 5, email);
+            table.set_cell_value(row, 6, descripcion);
+
+            }
+		}
 
 
-
-
-
-
+	Err(e) => {
+        fltk::dialog::alert(0, 0, &format!("Error: {}", e));
+        }
+ }
 
 
 
@@ -123,12 +146,14 @@ fn main() {
 
     add_button.set_callback(|_| {
         add_contact_window();
+
     });
 
 
     //clicks una vez presionado una celda...
 
         table.set_trigger(CallbackTrigger::Release);
+
 		table.set_callback(move |t|{
 		if let fltk::table::TableContext::Cell=t.callback_context(){
 
@@ -138,8 +163,8 @@ fn main() {
 
 					view_and_edit_contact_win();			}
 					}
-		}
-	});
+		}});
+
 
 
 

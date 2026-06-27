@@ -1,3 +1,4 @@
+#![allow(unused)]
 use fltk::{prelude::*, *,group::Pack,
     enums::{Align},input::Input,button::Button};
 use fltk::menu::Choice;
@@ -27,9 +28,8 @@ pub fn add_contact_window(){
 	pack_height : 400
 	};
 
+	// inicia la conexion
 	let db_path_ = "contactos.db";
-
-
     let conn = match init_db(db_path_) {
         Ok(c) => {
            c
@@ -104,7 +104,7 @@ pub fn add_contact_window(){
     win.end();
     win.show();
 
-    // lee los inputs y guarda el contacto
+    // lee los inputs y guarda el contacto a traves del boton save_btn
 	save_btn.set_callback(move |save_btn|{
 	match insert_contact(
         &conn,

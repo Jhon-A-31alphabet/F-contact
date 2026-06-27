@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use rusqlite::{params, Connection, Result};
 
 /// Inicializa la base de datos y crea la tabla `contacts` si no existe.
@@ -46,6 +48,31 @@ pub fn insert_contact(
         organizacion,
         email
     ])
+}
+
+pub type FilaContacto = (i64, String, String, String, String, String, String);
+pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
+
+
+
+    let mut stmt = conn.prepare("SELECT * FROM contacts")?;
+
+    let rows_iter = stmt.query_map([],|row|{
+
+    let id: i64 = row.get(0)?;
+        let nombre: String = row.get(1)?;
+        let categoria: String = row.get(2)?;
+        let descripcion: String = row.get(3)?;
+        let telefono: String = row.get(4)?;
+        let organizacion: String = row.get(5)?;
+        let email: String = row.get(6)?;
+
+        Ok((id, nombre, categoria, descripcion, telefono, organizacion, email))
+
+    })?;
+
+    rows_iter.collect()
+
 }
 
 /// Actualiza un contacto existente filtrando por su `id`.
