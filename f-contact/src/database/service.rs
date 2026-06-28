@@ -75,6 +75,18 @@ pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
 
 }
 
+pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas disponibles en la tabla...
+    let sql = "SELECT COUNT(*) FROM contacts";
+    
+   
+    match conn.query_row(sql, [], |row| row.get::<_, i64>(0)) {
+        
+        Ok(count) => count as i32,
+        // Si la tabla no existe o falla la conexión, devolvemos 0 de forma segura
+        Err(_) => 0, 
+    }
+}
+
 /// Actualiza un contacto existente filtrando por su `id`.
 pub fn update_contact(
     conn: &Connection,

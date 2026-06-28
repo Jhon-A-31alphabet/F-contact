@@ -5,9 +5,11 @@ use fltk::menu::Choice;
 use fltk::enums::FrameType;
 use fltk::group::Group;
 use fltk::dialog;
-
+use fltk_table::{SmartTable, TableOpts};
 use crate::database;
-use database::service::{init_db,insert_contact};  // importar el servicio base de datos
+use database::service::{init_db,insert_contact,count_rows};  // importar el servicio base de datos
+
+
 
 
 struct PackSize{
@@ -16,7 +18,7 @@ struct PackSize{
 	pack_width: u64,
 	pack_height:u64,
 }
-
+//table:&mut SmartTable
 
 pub fn add_contact_window(){
 
@@ -124,6 +126,7 @@ pub fn add_contact_window(){
             dialog::alert(0, 0, &format!("Error al guardar el contacto:\n{}", e));
         }
     }
+
     });
 
 
