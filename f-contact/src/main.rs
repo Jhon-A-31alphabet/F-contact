@@ -23,7 +23,7 @@ mod refresh_table;
 
 fn main() {
 	let db_path = "contactos.db";
-    let _conn = match init_db(db_path) {
+    let conn = match init_db(db_path) {
         Ok(c) => {
             c
         }
@@ -100,7 +100,7 @@ fn main() {
 		.with_size(1000,390)
 		.center_of_parent()
 		.with_opts(TableOpts{
-		rows: count_rows(&_conn)+1,
+		rows: count_rows(&conn)+1,
         cols: 7,
         editable: false,
         ..Default::default()
@@ -111,7 +111,7 @@ fn main() {
 		(&mut table).set_col_width(2,250);
 		(&mut table).set_col_width(3,250);
 
-	    match fetch_all(&_conn){
+	    match fetch_all(&conn){
 		Ok(lista_contactos)=>{
 		for (row_index, c) in lista_contactos.iter().enumerate() {
             let (id, nombre, categoria, descripcion, telefono, organizacion, email) = c;
@@ -146,13 +146,13 @@ fn main() {
     wind.end();
     wind.show();
 
-    let  conn_shared = Rc::new(_conn);
+    let  conn_shared = Rc::new(conn);
     let mut table_clone = table.clone();
     let conn_for_btn = conn_shared.clone();
     let mut refreshed_table = table_clone.clone();
     
     add_button.set_callback(move|_| {
-        add_contact_window(&mut table_clone,&*conn_for_btn);
+        add_contact_window(&mut table_clone,&conn_for_btn);
 
          refreshed_table.append_empty_row("-");
          //refresh_table::refresh_table_(&mut table_clone,&conn_for_btn);
