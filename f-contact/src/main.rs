@@ -3,7 +3,8 @@ use std::rc::Rc;
 use fltk::{app, prelude::*, window::Window, button::Button, input::Input, group::{Pack, PackType},menu::Choice,enums::FrameType, frame::Frame};
 use fltk_table::{SmartTable, TableOpts};
 use fltk::enums::CallbackTrigger;
-use rusqlite::Connection;
+
+
 mod add_contacts_window;
 use crate::add_contacts_window::add_contact_window;
 mod view_contact;
@@ -14,35 +15,7 @@ use fltk_theme::{ColorTheme, color_themes};
 mod database;
 use database::service::{init_db,fetch_all,count_rows};
 
-
-pub fn refresh_table(table:&mut SmartTable,conn:&Connection )
-{
-    table.clear();
-    table.set_rows(count_rows(&conn)+1);
-    match fetch_all(&conn) {
-        Ok(lista_contactos) => {
-            table.set_rows(lista_contactos.len() as i32);
-
-            for (row_index, c) in lista_contactos.iter().enumerate() {
-                let (id, nombre, categoria, descripcion, telefono, organizacion, email) = c;
-                let row = row_index as i32;
-
-                table.set_cell_value(row, 0, &id.to_string());
-                table.set_cell_value(row, 1, nombre);
-                table.set_cell_value(row, 2, categoria);
-                table.set_cell_value(row, 3, telefono);
-                table.set_cell_value(row, 4, organizacion);
-                table.set_cell_value(row, 5, email);
-                table.set_cell_value(row, 6, descripcion);
-            }
-            
-            
-        }
-        Err(e) => {
-            fltk::dialog::alert(0, 0, &format!("Error al actualizar tabla: {}", e));
-        }
-    }table.redraw();
-    }
+mod refresh_table;
 
 
 
@@ -141,13 +114,12 @@ fn main() {
 	    match fetch_all(&_conn){
 		Ok(lista_contactos)=>{
 		for (row_index, c) in lista_contactos.iter().enumerate() {
-            // Desestructuramos las referencias de la tupla `c`
             let (id, nombre, categoria, descripcion, telefono, organizacion, email) = c;
             let row = row_index as i32;
              table.set_rows(lista_contactos.len() as i32);
 
 
-            // Insertamos cada campo en su respectiva columna (0 a 6)
+            // Insertar en cada columna dada la fila (numero del iterador)
             table.set_cell_value(row, 0, &id.to_string());
             table.set_cell_value(row, 1, nombre);
             table.set_cell_value(row, 2, categoria);
@@ -174,16 +146,16 @@ fn main() {
     wind.end();
     wind.show();
 
-    let conn_shared = Rc::new(_conn);
+    let  conn_shared = Rc::new(_conn);
     let mut table_clone = table.clone();
     let conn_for_btn = conn_shared.clone();
     let mut refreshed_table = table_clone.clone();
     
     add_button.set_callback(move|_| {
-        add_contact_window();
-        //refresh_table(&mut table_clone,&conn_for_btn);
+        add_contact_window(&mut table_clone,&*conn_for_btn);
+
          refreshed_table.append_empty_row("-");
-         refresh_table(&mut table_clone,&conn_for_btn);
+         //refresh_table::refresh_table_(&mut table_clone,&conn_for_btn);
     });
 
    
@@ -202,8 +174,10 @@ fn main() {
 
 			if  fltk::app::event_clicks()  {
 
-					view_and_edit_contact_win();			}
-					}
+					view_and_edit_contact_win();			
+                }
+					
+                    }
 		}});
 
 

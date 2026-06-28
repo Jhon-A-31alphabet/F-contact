@@ -6,11 +6,10 @@ use fltk::enums::FrameType;
 use fltk::group::Group;
 use fltk::dialog;
 use fltk_table::{SmartTable, TableOpts};
-use crate::database;
+use rusqlite::Connection;
+use crate::{database, refresh_table};
 use database::service::{init_db,insert_contact,count_rows};  // importar el servicio base de datos
-
-
-
+use crate::refresh_table::refresh_table_;
 
 struct PackSize{
 	_x : u32,
@@ -20,8 +19,8 @@ struct PackSize{
 }
 //table:&mut SmartTable
 
-pub fn add_contact_window(){
-
+pub fn add_contact_window(mut table:&mut SmartTable,conn_:&Connection){
+    let mut table_clone_ = table.clone();
 	let  pack_size_ = PackSize
 	{
 	_x:160,
@@ -118,16 +117,20 @@ pub fn add_contact_window(){
         &inp_email.value(),
     ) {
         Ok(_) => {
-            // Reemplazamos println por un diálogo de información
+            //dialogo de accion exitosa
             dialog::message(0, 0, "¡Contacto guardado exitosamente!");
+            refresh_table::refresh_table_(&mut table_clone_,&conn);
+
         }
         Err(e) => {
-            // Reemplazamos eprintln por un diálogo de alerta de error
+            // dialogo de error
             dialog::alert(0, 0, &format!("Error al guardar el contacto:\n{}", e));
         }
-    }
 
+    }
     });
+
+
 
 
 

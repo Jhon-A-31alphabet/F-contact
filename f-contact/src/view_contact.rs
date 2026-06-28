@@ -15,7 +15,6 @@ pub fn view_and_edit_contact_win(){
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
 
     // 4: Todos los widgets encerrados en un frame de tipo embossed frame
-    // Se utiliza un Group para agrupar visualmente con un marco.
     let mut marco_visualizacion = Group::new(10, 10, 530, 430, "");
     marco_visualizacion.set_frame(FrameType::EmbossedFrame);
 
