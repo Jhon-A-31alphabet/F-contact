@@ -97,7 +97,7 @@ fn main() {
     
 
     let mut table = SmartTable::default()
-		.with_size(1000,400)
+		.with_size(1000,390)
 		.center_of_parent()
 		.with_opts(TableOpts{
 		rows: count_rows(&_conn)+1,
