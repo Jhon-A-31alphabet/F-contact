@@ -2,7 +2,7 @@
 
 use rusqlite::{params, Connection, Result};
 
-/// Inicializa la base de datos y crea la tabla `contacts` si no existe.
+/// Inicializa la base de datos y crea la tabla contacts si no existe.
 pub fn init_db(db_path: &str) -> Result<Connection> {
     let conn = Connection::open(db_path)?;
 
@@ -51,6 +51,7 @@ pub fn insert_contact(
 }
 
 pub type FilaContacto = (i64, String, String, String, String, String, String);
+
 pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
 
 
