@@ -13,7 +13,7 @@ use fltk_theme::{ColorTheme, color_themes};
 
 
 mod database;
-use database::service::{init_db,fetch_all,count_rows};
+use database::service::{init_db,fetch_all,count_rows,search};
 
 mod refresh_table;
 
@@ -22,7 +22,7 @@ mod refresh_table;
 
 
 fn main() {
-	let db_path = "contactos.db";
+	let db_path = "contacts.db";
     let conn = match init_db(db_path) {
         Ok(c) => {
             c
@@ -158,9 +158,9 @@ fn main() {
          //refresh_table::refresh_table_(&mut table_clone,&conn_for_btn);
     });
 
+    
+
    
-
-
 
 
     //clicks una vez presionado una celda...

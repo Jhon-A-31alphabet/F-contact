@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use rusqlite::{params, Connection, Result};
+use rusqlite::{Connection, Result, Statement, StatementStatus::RePrepare, ffi::sqlite3_prepare, params};
 
 /// Inicializa la base de datos y crea la tabla contacts si no existe.
 pub fn init_db(db_path: &str) -> Result<Connection> {
@@ -86,6 +86,39 @@ pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas dispo
         // Si la tabla no existe o falla la conexión, devolvemos 0 de forma segura
         Err(_) => 0, 
     }
+}
+#[derive(Debug)]
+pub struct  Usuario{
+    pub id: i64,
+    pub nombre: String,
+}
+
+pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
+
+    let sql_like_query = "SELECT * FROM contacts WHERE nombre LIKE ?1 ";
+    
+    let mut stmt_ =match conn.prepare(sql_like_query){
+           Ok(statement)=>statement,
+           Err(error)=> return Err((error))
+    };
+    let mut buscar_nombre =format!("{}%",nombre);
+
+   let mut buscar_fila=stmt_.query_map([buscar_nombre], |row|{
+        let buscar_id:i64 = row.get(0)?;
+        let buscar_nombre:String =row.get(1)?; 
+        Ok(Usuario {
+            id: buscar_id,
+            nombre: buscar_nombre,
+        })
+    })?;
+   
+
+    //buscar_fila.collect();
+    let mut resultados = Vec::new();
+    for usuario in buscar_fila{
+        resultados.push(usuario?);
+    }
+    Ok((resultados))
 }
 
 /// Actualiza un contacto existente filtrando por su `id`.

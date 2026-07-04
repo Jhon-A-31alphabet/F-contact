@@ -30,7 +30,7 @@ pub fn add_contact_window(mut table:&mut SmartTable,conn_:&Connection){
 	};
 
 	// inicia la conexion
-	let db_path_ = "contactos.db";
+	let db_path_ = "contacts.db";
     let conn = match init_db(db_path_) {
         Ok(c) => {
            c
