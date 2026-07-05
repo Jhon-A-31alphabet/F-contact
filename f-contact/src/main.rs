@@ -14,7 +14,6 @@ use fltk_theme::{ColorTheme, color_themes};
 
 mod database;
 use database::service::{init_db,fetch_all,count_rows,search};
-
 mod refresh_table;
 
 
@@ -158,9 +157,13 @@ fn main() {
          //refresh_table::refresh_table_(&mut table_clone,&conn_for_btn);
     });
 
+    search_button.set_callback(move|_|{
+        let mut p = search(&conn_shared,&input.value()); // leer la barra de busqueda y buscar
+       println!("{:?}",p) ; //agregado temporalmente... ( se eliminara cuando se implemente el refresco de la tabla)...
+    });
+
     
 
-   
 
 
     //clicks una vez presionado una celda...

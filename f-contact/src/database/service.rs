@@ -27,7 +27,7 @@ pub fn init_db(db_path: &str) -> Result<Connection> {
 pub fn insert_contact(
     conn: &Connection,
     nombre: &str,
-    categoria: &i32,
+    categoria: &i32, // nescesita el i32 para en base al indice el widget choice poder seleccionar  ---> add_contacts_windows.rs
     telefono: &str,
     descripcion: &str,
     organizacion: &str,
@@ -91,6 +91,8 @@ pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas dispo
 pub struct  Usuario{
     pub id: i64,
     pub nombre: String,
+    pub categoria: String,
+    pub descripcion: String,
 }
 
 pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
@@ -106,9 +108,14 @@ pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
    let mut buscar_fila=stmt_.query_map([buscar_nombre], |row|{
         let buscar_id:i64 = row.get(0)?;
         let buscar_nombre:String =row.get(1)?; 
+        let buscar_categoria :String = row.get(2)?;
+        let buscar_descripcion:String = row.get(3)?;
         Ok(Usuario {
             id: buscar_id,
             nombre: buscar_nombre,
+            categoria:buscar_categoria,
+            descripcion:buscar_descripcion
+
         })
     })?;
    

@@ -105,6 +105,8 @@ pub fn add_contact_window(mut table:&mut SmartTable,conn_:&Connection){
     win.end();
     win.show();
 
+
+
     // lee los inputs y guarda el contacto a traves del boton save_btn
 	save_btn.set_callback(move |save_btn|{
 	match insert_contact(
@@ -129,6 +131,8 @@ pub fn add_contact_window(mut table:&mut SmartTable,conn_:&Connection){
 
     }
     });
+
+    
 
 
 

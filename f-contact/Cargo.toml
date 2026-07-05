@@ -7,4 +7,5 @@ edition = "2024"
 fltk = { version = "^1.5", features = ["fltk-bundled"] }
 fltk-table = "0.3"
 fltk-theme = "0.7.9"
+rusqlite = { version = "0.31.0", features = ["bundled"] }
 
