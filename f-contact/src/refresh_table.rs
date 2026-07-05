@@ -35,3 +35,5 @@ pub fn refresh_table_(table:&mut SmartTable,conn:&Connection )
     }table.redraw();  // redibujar la tabla
     }
 
+
+

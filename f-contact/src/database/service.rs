@@ -93,6 +93,9 @@ pub struct  Usuario{
     pub nombre: String,
     pub categoria: String,
     pub descripcion: String,
+    pub telefono :String,
+    pub organizacion:String,
+    pub email: String
 }
 
 pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
@@ -106,15 +109,25 @@ pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
     let mut buscar_nombre =format!("{}%",nombre);
 
    let mut buscar_fila=stmt_.query_map([buscar_nombre], |row|{
+        
         let buscar_id:i64 = row.get(0)?;
         let buscar_nombre:String =row.get(1)?; 
         let buscar_categoria :String = row.get(2)?;
         let buscar_descripcion:String = row.get(3)?;
+        let buscar_telefono: String = row.get(4)?;
+        let buscar_organizacion :String = row.get(5)?;
+        let buscar_email : String = row.get(6)?;
+
+
         Ok(Usuario {
             id: buscar_id,
             nombre: buscar_nombre,
             categoria:buscar_categoria,
-            descripcion:buscar_descripcion
+            descripcion:buscar_descripcion,
+            telefono: buscar_telefono,
+            organizacion: buscar_organizacion,
+            email:buscar_email
+
 
         })
     })?;

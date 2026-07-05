@@ -16,7 +16,7 @@ mod database;
 use database::service::{init_db,fetch_all,count_rows,search};
 mod refresh_table;
 
-
+mod refreshbysearch;
 
 
 
@@ -147,8 +147,17 @@ fn main() {
 
     let  conn_shared = Rc::new(conn);
     let mut table_clone = table.clone();
+    
     let conn_for_btn = conn_shared.clone();
     let mut refreshed_table = table_clone.clone();
+
+    let  conn_shared_clone = conn_shared.clone();
+
+
+
+    let mut table_for_search = table.clone(); // Su propio clon de la tabla
+    let conn_shared_clone = conn_shared.clone();
+    let input_clone = input.clone();
     
     add_button.set_callback(move|_| {
         add_contact_window(&mut table_clone,&conn_for_btn);
@@ -158,8 +167,11 @@ fn main() {
     });
 
     search_button.set_callback(move|_|{
-        let mut p = search(&conn_shared,&input.value()); // leer la barra de busqueda y buscar
-       println!("{:?}",p) ; //agregado temporalmente... ( se eliminara cuando se implemente el refresco de la tabla)...
+        let p = search(&conn_shared,&input_clone.value()); // leer la barra de busqueda y buscar
+      // println!("{:?}",p) ; //agregado temporalmente... ( se eliminara cuando se implemente el refresco de la tabla)...
+      refreshbysearch::refreshby_search(&mut table_for_search, &conn_shared_clone, &p);
+    
+    
     });
 
     
