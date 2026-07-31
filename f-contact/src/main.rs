@@ -83,7 +83,7 @@ fn main() {
 	choice.set_text_size(12);
 
 	choice.set_callback(move|e|{
-	e.set_value(0);
+	//e.set_value(0);
 	e.redraw();
 
 	});
@@ -139,9 +139,6 @@ fn main() {
 
 
 
-
-
-
     wind.end();
     wind.show();
 
@@ -178,7 +175,7 @@ fn main() {
 
 
 
-    //clicks una vez presionado una celda...
+    //clicks una vez presionado una celda... dada una celda cualquiera..
 
         table.set_trigger(CallbackTrigger::Release);
 
