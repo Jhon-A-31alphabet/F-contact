@@ -34,6 +34,21 @@ fn main() {
 
 
 
+     let categorias__:Vec<&str> = vec![
+        "Trabajo", 
+        "Fax del trabajo", 
+        "Amistad", 
+        "Familiar", 
+        "Empresa", 
+        "Servicio", 
+        "Casa", 
+        "Movil", 
+        "Vendedor", 
+        "Radio"
+    ];
+
+
+
     let app = app::App::default();
     let (screen_w, screen_h) = app::screen_size();
     let color_theme = ColorTheme::new(color_themes::TAN_THEME);

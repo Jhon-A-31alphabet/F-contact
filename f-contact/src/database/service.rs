@@ -27,7 +27,7 @@ pub fn init_db(db_path: &str) -> Result<Connection> {
 pub fn insert_contact(
     conn: &Connection,
     nombre: &str,
-    categoria: &i32, // nescesita el i32 para en base al indice el widget choice poder seleccionar  ---> add_contacts_windows.rs
+    categoria: &str, // nescesita el i32 para en base al indice el widget choice poder seleccionar  ---> add_contacts_windows.rs
     telefono: &str,
     descripcion: &str,
     organizacion: &str,
@@ -178,7 +178,7 @@ pub fn update_contact(
     ])
 }
 
-/// Obtiene un contacto específico por su ID y lo retorna en un vector
+/// Obtiene un contacto específico por su ID y lo retorna en un vector,
 pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Usuario>> {
     let sql_query = "SELECT * FROM contacts WHERE id = ?1";
     let mut stmt = conn.prepare(sql_query)?;

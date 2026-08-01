@@ -1,4 +1,6 @@
 
+use std::vec;
+
 use fltk::{
 
     button::Button,
@@ -57,7 +59,8 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Usuario){
 
 // La posicion de cada elemento en el vector sirve para representar el numero de cada categoria
 //antes de  inyectar datos a la tabla SQL.
-    let categorias = vec![
+    
+   let categorias = vec![
         "Trabajo", 
         "Fax del trabajo", 
         "Amistad", 
@@ -70,6 +73,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Usuario){
         "Radio"
     ];
 
+
     // Llenado de los inputs con los datos extraídos
     inp_codigo.set_value(&contacto.id.to_string());
     inp_nombre.set_value(&contacto.nombre);
@@ -78,7 +82,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Usuario){
     let cat_index = contacto.categoria.parse::<usize>().unwrap_or(0);
     let cat_string = categorias.get(cat_index).unwrap_or(&"Desconocido");
     inp_categoria.set_value(cat_string);
-
+    
     inp_telefono.set_value(&contacto.telefono);
     inp_organizacion.set_value(&contacto.organizacion);
     inp_correo.set_value(&contacto.email);
