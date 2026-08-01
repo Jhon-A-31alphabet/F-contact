@@ -34,18 +34,6 @@ fn main() {
 
 
 
-     let categorias__:Vec<&str> = vec![
-        "Trabajo", 
-        "Fax del trabajo", 
-        "Amistad", 
-        "Familiar", 
-        "Empresa", 
-        "Servicio", 
-        "Casa", 
-        "Movil", 
-        "Vendedor", 
-        "Radio"
-    ];
 
 
 
