@@ -11,7 +11,7 @@ use fltk::{
 
 
 
-pub fn view_and_edit_contact_win(){
+pub fn view_and_edit_contact_win(contacto: &crate::database::service::Usuario){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
 
@@ -55,11 +55,42 @@ pub fn view_and_edit_contact_win(){
     inp_correo.set_readonly(true);
     txt_adicional.set_readonly(true);
 
+// La posicion de cada elemento en el vector sirve para representar el numero de cada categoria
+//antes de  inyectar datos a la tabla SQL.
+    let categorias = vec![
+        "Trabajo", 
+        "Fax del trabajo", 
+        "Amistad", 
+        "Familiar", 
+        "Empresa", 
+        "Servicio", 
+        "Casa", 
+        "Movil", 
+        "Vendedor", 
+        "Radio"
+    ];
+
+    // Llenado de los inputs con los datos extraídos
+    inp_codigo.set_value(&contacto.id.to_string());
+    inp_nombre.set_value(&contacto.nombre);
+    
+    // Parseo seguro del string de la BD a número para buscar en el diccionario
+    let cat_index = contacto.categoria.parse::<usize>().unwrap_or(0);
+    let cat_string = categorias.get(cat_index).unwrap_or(&"Desconocido");
+    inp_categoria.set_value(cat_string);
+
+    inp_telefono.set_value(&contacto.telefono);
+    inp_organizacion.set_value(&contacto.organizacion);
+    inp_correo.set_value(&contacto.email);
+    txt_adicional.set_value(&contacto.descripcion);
+   
+
     marco_visualizacion.end();
     view_and_edit_w.end();
+   
 
     view_and_edit_w.show();
-         view_and_edit_w.make_modal(true);
+    view_and_edit_w.make_modal(true);
 
 
     btn_editar.set_callback(move |_| {

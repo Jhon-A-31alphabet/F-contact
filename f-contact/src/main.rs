@@ -1,6 +1,6 @@
 
 use std::rc::Rc;
-use fltk::{app, prelude::*, window::Window, button::Button, input::Input, group::{Pack, PackType},menu::Choice,enums::FrameType, frame::Frame};
+use fltk::{app, button::Button, dialog, enums::FrameType, frame::Frame, group::{Pack, PackType}, input::Input, menu::Choice, prelude::*, window::Window};
 use fltk_table::{SmartTable, TableOpts};
 use fltk::enums::CallbackTrigger;
 
@@ -148,7 +148,6 @@ fn main() {
     let conn_for_btn = conn_shared.clone();
     let mut refreshed_table = table_clone.clone();
 
-    let  conn_shared_clone = conn_shared.clone();
 
 
 
@@ -160,12 +159,11 @@ fn main() {
         add_contact_window(&mut table_clone,&conn_for_btn);
 
          refreshed_table.append_empty_row("-");
-         //refresh_table::refresh_table_(&mut table_clone,&conn_for_btn);
     });
 
+    let value = conn_shared.clone();
     search_button.set_callback(move|_|{
-        let p = search(&conn_shared,&input_clone.value()); // leer la barra de busqueda y buscar
-      // println!("{:?}",p) ; //agregado temporalmente... ( se eliminara cuando se implemente el refresco de la tabla)...
+        let p = search(&value,&input_clone.value()); // leer la barra de busqueda y buscar
       refreshbysearch::refreshby_search(&mut table_for_search, &conn_shared_clone, &p);
     
     
@@ -179,18 +177,51 @@ fn main() {
 
         table.set_trigger(CallbackTrigger::Release);
 
-		table.set_callback(move |t|{
-		if let fltk::table::TableContext::Cell=t.callback_context(){
+        let conn_para_celda = conn_shared.clone();
+        let table_para_celda = table.clone();
 
-		if fltk::app::event() == fltk::enums::Event::Released {
 
-			if  fltk::app::event_clicks()  {
 
-					view_and_edit_contact_win();			
-                }
-					
+
+        table.set_callback(move |t|{
+        if let fltk::table::TableContext::Cell = t.callback_context() {
+            if fltk::app::event() == fltk::enums::Event::Released {
+                
+                
+                    let row = t.callback_row();
+                    let id_str = table_para_celda.cell_value(row, 0);
+                    
+                   
+
+                    // Usamos trim() por si la celda tiene espacios en blanco invisibles
+                    match id_str.trim().parse::<i64>() {
+                        Ok(id) => {
+
+
+                            match database::service::get_contact_by_id(&conn_para_celda, id) {
+                                Ok(vector_resultados) => {
+                                    if let Some(contacto) = vector_resultados.first() {
+                                       //usa el parametro contacto para llenar los campos
+
+                                        view_and_edit_contact_win(contacto);
+                                    } else {
+                                        dialog::message_default("Advertencia: La BD no devolvió ningún contacto con el ID leido");
+                                    }
+                                },
+                                Err(_e) => dialog::message_default("Error al consultar la Base de Datos")
+                            }
+                        },
+                        Err(_e) => {
+                            dialog::message_default("categoria no detectada");
+                        }
                     }
-		}});
+
+                }
+            }
+        //}
+    });
+
+      
 
 
 

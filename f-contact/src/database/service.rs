@@ -177,3 +177,28 @@ pub fn update_contact(
         id
     ])
 }
+
+/// Obtiene un contacto específico por su ID y lo retorna en un vector
+pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Usuario>> {
+    let sql_query = "SELECT * FROM contacts WHERE id = ?1";
+    let mut stmt = conn.prepare(sql_query)?;
+
+    let iterador_fila = stmt.query_map([id], |row| {
+        Ok(Usuario {
+            id: row.get(0)?,
+            nombre: row.get(1)?,
+            categoria: row.get(2)?,
+            descripcion: row.get(3)?,
+            telefono: row.get(4)?,
+            organizacion: row.get(5)?,
+            email: row.get(6)?,
+        })
+    })?;
+
+    let mut resultados = Vec::new();
+    for usuario in iterador_fila {
+        resultados.push(usuario?);
+    }
+    
+    Ok(resultados)
+}
