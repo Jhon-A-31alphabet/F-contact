@@ -27,7 +27,7 @@ pub fn init_db(db_path: &str) -> Result<Connection> {
 pub fn insert_contact(
     conn: &Connection,
     nombre: &str,
-    categoria: &str, // nescesita el i32 para en base al indice el widget choice poder seleccionar  ---> add_contacts_windows.rs
+    categoria: &str, 
     telefono: &str,
     descripcion: &str,
     organizacion: &str,
@@ -53,8 +53,6 @@ pub fn insert_contact(
 pub type FilaContacto = (i64, String, String, String, String, String, String);
 
 pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
-
-
 
     let mut stmt = conn.prepare("SELECT * FROM contacts")?;
 
@@ -87,6 +85,7 @@ pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas dispo
         Err(_) => 0, 
     }
 }
+
 
 #[derive(Debug)]
 pub struct  Contacto{
