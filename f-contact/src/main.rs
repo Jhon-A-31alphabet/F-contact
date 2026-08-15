@@ -81,12 +81,12 @@ fn main() {
     cat_label.set_label_size(18);
 
     let mut choice = Choice::new(0, 0, 120, height - 10, ""); // ancho 120, altura ajustada al pack
-    choice.add_choice("|Trabajo|Fax del trabajo|Amistad|Familiar|Empresa|Servicio|Casa|Movil|Vendedor|Radio");  // aqui van las categorias
+    choice.add_choice("Todos|Trabajo|Fax del trabajo|Amistad|Familiar|Empresa|Servicio|Casa|Movil|Vendedor|Radio");  // aqui van las categorias
 	choice.set_value(0);
 	choice.set_text_size(12);
 
 	choice.set_callback(move|e|{
-	//e.set_value(0);
+        
 	e.redraw();
 
 	});

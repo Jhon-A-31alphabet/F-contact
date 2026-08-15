@@ -141,6 +141,11 @@ pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
     Ok((resultados))
 }
 
+
+
+
+
+
 /// Actualiza un contacto existente filtrando por su `id`.
 pub fn update_contact(
     conn: &Connection,
