@@ -87,8 +87,9 @@ pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas dispo
         Err(_) => 0, 
     }
 }
+
 #[derive(Debug)]
-pub struct  Usuario{
+pub struct  Contacto{
     pub id: i64,
     pub nombre: String,
     pub categoria: String,
@@ -98,7 +99,7 @@ pub struct  Usuario{
     pub email: String
 }
 
-pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
+pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Contacto>>{
 
     let sql_like_query = "SELECT * FROM contacts WHERE nombre LIKE ?1 ";
     
@@ -119,7 +120,7 @@ pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Usuario>>{
         let buscar_email : String = row.get(6)?;
 
 
-        Ok(Usuario {
+        Ok(Contacto {
             id: buscar_id,
             nombre: buscar_nombre,
             categoria:buscar_categoria,
@@ -184,12 +185,38 @@ pub fn update_contact(
 }
 
 /// Obtiene un contacto específico por su ID y lo retorna en un vector,
-pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Usuario>> {
+pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Contacto>> {
     let sql_query = "SELECT * FROM contacts WHERE id = ?1";
     let mut stmt = conn.prepare(sql_query)?;
 
     let iterador_fila = stmt.query_map([id], |row| {
-        Ok(Usuario {
+        Ok(Contacto {
+            id: row.get(0)?,
+            nombre: row.get(1)?,
+            categoria: row.get(2)?,
+            descripcion: row.get(3)?,
+            telefono: row.get(4)?,
+            organizacion: row.get(5)?,
+            email: row.get(6)?,
+        })
+    })?;
+
+    let mut resultados = Vec::new();
+    for usuario in iterador_fila {
+        resultados.push(usuario?);
+    }
+    
+    Ok(resultados)
+}
+
+
+
+pub fn get_contact_by_category(conn: &Connection, categoria: &str) -> Result<Vec<Contacto>> {
+    let sql_query = "SELECT * FROM contacts WHERE categoria = ?1";
+    let mut stmt = conn.prepare(sql_query)?;
+
+    let iterador_fila = stmt.query_map([categoria], |row| {
+        Ok(Contacto {
             id: row.get(0)?,
             nombre: row.get(1)?,
             categoria: row.get(2)?,

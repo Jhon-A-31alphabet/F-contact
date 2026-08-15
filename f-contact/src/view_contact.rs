@@ -13,7 +13,7 @@ use fltk::{
 
 
 
-pub fn view_and_edit_contact_win(contacto: &crate::database::service::Usuario){
+pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
 

@@ -2,9 +2,9 @@ use rusqlite::Connection;
 use fltk_table::SmartTable;
 use fltk::prelude::WidgetExt;
 use crate::database;
-use database::service::{Usuario, search};
+use database::service::{Contacto, search};
 
-pub fn refreshby_search(table: &mut SmartTable, conn: &Connection, vec: &Result<Vec<Usuario>, rusqlite::Error>) {
+pub fn refreshby_search(table: &mut SmartTable, conn: &Connection, vec: &Result<Vec<Contacto>, rusqlite::Error>) {
     table.clear();
 
     if let Ok(lista_usuarios) = vec {

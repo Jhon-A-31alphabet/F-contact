@@ -13,7 +13,7 @@ use fltk_theme::{ColorTheme, color_themes};
 
 
 mod database;
-use database::service::{init_db,fetch_all,count_rows,search};
+use database::service::{init_db,fetch_all,count_rows,search,get_contact_by_category};
 mod refresh_table;
 
 mod refreshbysearch;
@@ -85,11 +85,8 @@ fn main() {
 	choice.set_value(0);
 	choice.set_text_size(12);
 
-	choice.set_callback(move|e|{
-        
-	e.redraw();
-
-	});
+    
+	
 
 
 
@@ -172,8 +169,61 @@ fn main() {
     
     });
 
-    
 
+    // Clonamos las referencias para el Choice de categorías
+    let mut table_for_choice = table.clone();
+    let conn_for_choice = conn_shared.clone();
+
+    choice.set_callback(move |c| {
+        if let Some(selected_cat) = c.choice() {
+            
+            if selected_cat == "Todos" {
+                // AQUÍ MANEJAMOS LA TUPLA QUE DEVUELVE fetch_all()
+                match fetch_all(&conn_for_choice) {
+                    Ok(lista_contactos) => {
+                        table_for_choice.set_rows(lista_contactos.len() as i32);
+                        
+                        for (row_index, contacto) in lista_contactos.iter().enumerate() {
+                            let (id, nombre, categoria, descripcion, telefono, organizacion, email) = contacto;
+                            let row = row_index as i32;
+                            
+                            table_for_choice.set_cell_value(row, 0, &id.to_string());
+                            table_for_choice.set_cell_value(row, 1, nombre);
+                            table_for_choice.set_cell_value(row, 2, categoria);
+                            table_for_choice.set_cell_value(row, 3, telefono);
+                            table_for_choice.set_cell_value(row, 4, organizacion);
+                            table_for_choice.set_cell_value(row, 5, email);
+                            table_for_choice.set_cell_value(row, 6, descripcion);
+                        }
+                        table_for_choice.redraw();
+                    }
+                    Err(e) => fltk::dialog::alert(0, 0, &format!("Error al cargar todos: {}", e)),
+                }
+
+            } else {
+                // AQUÍ MANEJAMOS EL STRUCT "Usuario" QUE DEVUELVE get_contact_by_category()
+                match get_contact_by_category(&conn_for_choice, &selected_cat) {
+                    Ok(lista_contactos) => {
+                        table_for_choice.set_rows(lista_contactos.len() as i32);
+                        
+                        for (row_index, contacto) in lista_contactos.iter().enumerate() {
+                            let row = row_index as i32;
+                            
+                            table_for_choice.set_cell_value(row, 0, &contacto.id.to_string());
+                            table_for_choice.set_cell_value(row, 1, &contacto.nombre);
+                            table_for_choice.set_cell_value(row, 2, &contacto.categoria);
+                            table_for_choice.set_cell_value(row, 3, &contacto.telefono);
+                            table_for_choice.set_cell_value(row, 4, &contacto.organizacion);
+                            table_for_choice.set_cell_value(row, 5, &contacto.email);
+                            table_for_choice.set_cell_value(row, 6, &contacto.descripcion);
+                        }
+                        table_for_choice.redraw();
+                    }
+                    Err(e) => fltk::dialog::alert(0, 0, &format!("Error al filtrar categoría: {}", e)),
+                }
+            }
+        }
+    });
 
 
     //clicks una vez presionado una celda... dada una celda cualquiera..
