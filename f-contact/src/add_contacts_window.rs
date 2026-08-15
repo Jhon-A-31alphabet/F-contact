@@ -37,7 +37,7 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
     };
 
     // Inicia la conexión (aunque ya recibes conn_ por parámetro, mantengo tu estilo)
-    let db_path_ = "contacts.db";
+    let db_path_ = "db/contacts.db";
     let conn = match init_db(db_path_) {
         Ok(c) => c,
         Err(e) => {

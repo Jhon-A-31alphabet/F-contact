@@ -21,7 +21,7 @@ mod refreshbysearch;
 
 
 fn main() {
-	let db_path = "contacts.db";
+	let db_path = "db/contacts.db";
     let conn = match init_db(db_path) {
         Ok(c) => {
             c
@@ -31,7 +31,6 @@ fn main() {
             return;
         }
     };
-
 
 
 
@@ -154,6 +153,8 @@ fn main() {
     let mut table_for_search = table.clone(); // Su propio clon de la tabla
     let conn_shared_clone = conn_shared.clone();
     let input_clone = input.clone();
+
+    let mut table_to_fetchall = table.clone();  // clon del table para comparar si el el input esta vacio.......
     
     add_button.set_callback(move|_| {
         add_contact_window(&mut table_clone,&conn_for_btn);
@@ -163,9 +164,19 @@ fn main() {
 
     let value = conn_shared.clone();
     search_button.set_callback(move|_|{
-        let p = search(&value,&input_clone.value()); // leer la barra de busqueda y buscar
-      refreshbysearch::refreshby_search(&mut table_for_search, &conn_shared_clone, &p);
-    
+
+        if input.value().is_empty() {
+                        let _ = fetch_all(&conn_shared_clone);
+                        refresh_table::refresh_table_(&mut table_to_fetchall, &conn_shared_clone);
+
+            
+        }else{
+            let p = search(&value,&input_clone.value());
+            refreshbysearch::refreshby_search(&mut table_for_search, &conn_shared_clone, &p);
+
+
+        }
+
     
     });
 
