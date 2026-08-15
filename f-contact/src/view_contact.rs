@@ -57,10 +57,9 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     inp_correo.set_readonly(true);
     txt_adicional.set_readonly(true);
 
-// La posicion de cada elemento en el vector sirve para representar el numero de cada categoria
-//antes de  inyectar datos a la tabla SQL.
+
     
-   let categorias = vec![
+ let categorias = vec![
         "Trabajo", 
         "Fax del trabajo", 
         "Amistad", 
@@ -100,7 +99,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     btn_editar.set_callback(move |_| {
         // Se habilitan todos para escritura, excepto el código
         inp_nombre.set_readonly(false);
-        inp_categoria.set_readonly(false);
+        inp_categoria.set_readonly(true);
         inp_telefono.set_readonly(false);
         inp_organizacion.set_readonly(false);
         inp_correo.set_readonly(false);

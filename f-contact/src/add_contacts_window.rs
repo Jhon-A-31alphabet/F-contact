@@ -94,7 +94,7 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
 
     let mut cho_cat = Choice::default().with_size(0, 35).with_label("Categoría:");
     cho_cat.set_align(Align::Left);
-    cho_cat.add_choice("Personal|Trabajo|Estudiante|Otros");
+    cho_cat.add_choice("Trabajo|Fax del trabajo|Amistad|Familiar|Empresa|Servicio|Casa|Movil|Vendedor|Radio");
     cho_cat.set_value(0);
 
     pack.end();
