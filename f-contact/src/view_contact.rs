@@ -3,12 +3,7 @@ use std::vec;
 
 use fltk::{
 
-    button::Button,
-    enums::{Align, FrameType},
-    group::Group,
-    input::{Input, MultilineInput},
-    prelude::*,
-    window::Window,
+    button::Button, draw::width, enums::{Align, FrameType}, group::Group, input::{Input, MultilineInput}, prelude::*, window::Window,
 };
 
 
@@ -24,6 +19,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     // 5: Botones superiores (Label con los íconos internos de FLTK)
     let mut btn_editar = Button::new(20, 20, 30, 30, "@filesaveas");
     let _btn_guardar = Button::new(60, 20, 30, 30, "@filesave");
+    let _btn_borrar = Button::new(100,20,30,30,"Del");
 
     // 2: Inputs (Dejamos 150px de margen a la izquierda para los labels)
     let ancho_input = 360;

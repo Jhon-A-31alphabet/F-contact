@@ -90,7 +90,7 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
     inp_email.set_align(Align::Left);
 
     // 6. Categoría (Choice)
-    let categorias = ["Personal", "Trabajo", "Estudiante", "Otros"];
+    let categorias = ["Trabajo","Fax del trabajo","Amistad","Familiar","Empresa","Servicio","Casa","Movil","Vendedor","Radio"];
 
     let mut cho_cat = Choice::default().with_size(0, 35).with_label("Categoría:");
     cho_cat.set_align(Align::Left);
@@ -114,7 +114,7 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
         match insert_contact(
             &conn,
             &inp_name.value(),
-            categoria_str, // <-- ya es &str
+            categoria_str, 
             &inp_desc.value(),
             &inp_tel.value(),
             &inp_org.value(),
