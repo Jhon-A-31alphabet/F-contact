@@ -163,6 +163,7 @@ fn main() {
     });
 
     let value = conn_shared.clone();
+
     search_button.set_callback(move|_|{
 
         if input.value().is_empty() {
@@ -243,7 +244,7 @@ fn main() {
 
         let conn_para_celda = conn_shared.clone();
         let table_para_celda = table.clone();
-
+        let mut table_editar_ver_cont = table.clone();
 
 
 
@@ -267,7 +268,7 @@ fn main() {
                                     if let Some(contacto) = vector_resultados.first() {
                                        //usa el parametro contacto para llenar los campos
 
-                                        view_and_edit_contact_win(contacto);
+                                        view_and_edit_contact_win(contacto,&mut table_editar_ver_cont);
                                     } else {
                                         dialog::message_default("Advertencia: La BD no devolvió ningún contacto con el ID leido");
                                     }

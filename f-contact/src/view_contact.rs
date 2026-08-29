@@ -3,12 +3,17 @@ use std::vec;
 
 use fltk::{
 
-    button::Button, draw::width, enums::{Align, FrameType}, group::Group, input::{Input, MultilineInput}, prelude::*, window::Window,
+    button::Button, draw::width, enums::{Align, FrameType}, group::Group, input::{Input, MultilineInput}, prelude::*, table, window::Window,
 };
+use fltk::dialog;
+use fltk_table::SmartTable;
 
 
+use crate::database::service::{update_contact,init_db};
+use crate::refresh_table;
 
-pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
+
+pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,mut table: &mut SmartTable){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
 
@@ -18,10 +23,11 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
 
     // 5: Botones superiores (Label con los íconos internos de FLTK)
     let mut btn_editar = Button::new(20, 20, 30, 30, "@filesaveas");
-    let _btn_guardar = Button::new(60, 20, 30, 30, "@filesave");
+    let mut _btn_guardar = Button::new(60, 20, 30, 30, "@filesave");
     let _btn_borrar = Button::new(100,20,30,30,"Del");
 
     // 2: Inputs (Dejamos 150px de margen a la izquierda para los labels)
+
     let ancho_input = 360;
     let alto_input = 25;
     let x_input = 160;
@@ -32,6 +38,8 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     let mut inp_telefono = Input::new(x_input, 165, ancho_input, alto_input, "Numero de telefono:");
     let mut inp_organizacion = Input::new(x_input, 200, ancho_input, alto_input, "Organizacion:");
     let mut inp_correo = Input::new(x_input, 235, ancho_input, alto_input, "Correo:");
+
+    let mut table_clone__ = table.clone();
 
     // Ajuste opcional para alinear mejor los textos a la izquierda del input
     inp_codigo.set_align(Align::Left);
@@ -70,7 +78,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
 
 
     // Llenado de los inputs con los datos extraídos
-    inp_codigo.set_value(&contacto.id.to_string());
+    inp_codigo.set_value(&&contacto.id.to_string());
     inp_nombre.set_value(&contacto.nombre);
     
     // Parseo seguro del string de la BD a número para buscar en el diccionario
@@ -92,6 +100,26 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
     view_and_edit_w.make_modal(true);
 
 
+
+     let path = "db/contacts.db";
+    let conn__ = match init_db(path) {
+        Ok(c) => c,
+        Err(e) => {
+            eprintln!("Error al inicializar la base de datos: {}", e);
+            return;
+        }
+    };
+
+    let inp_codigo_clone = inp_codigo.value(); // clonado para ser usado en btn_guardar
+    let txt_adicional_clone = txt_adicional.clone();
+    let inp_telefono_clone = inp_telefono.clone();
+    let inp_categoria_clone = inp_categoria.clone();
+    let inp_correo_clone = inp_correo.clone();
+    let inp_nombre_clone = inp_nombre.clone();
+    let inp_organizacion_clone = inp_organizacion.clone();
+
+
+
     btn_editar.set_callback(move |_| {
         // Se habilitan todos para escritura, excepto el código
         inp_nombre.set_readonly(false);
@@ -100,6 +128,26 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto){
         inp_organizacion.set_readonly(false);
         inp_correo.set_readonly(false);
         txt_adicional.set_readonly(false);
+
+    });
+
+
+    _btn_guardar.set_callback(move |_|{
+
+        match update_contact(&conn__,inp_codigo_clone.parse().unwrap() , &inp_nombre_clone.value(), &inp_categoria_clone.value(), &inp_telefono_clone.value(), &txt_adicional_clone.value(), &inp_organizacion_clone.value(), &inp_correo_clone.value())
+        {
+        Ok(_) => {
+                dialog::message(0, 0, "¡Contacto editado exitosamente");
+                refresh_table::refresh_table_(&mut table_clone__, &conn__);
+
+            }
+            Err(e)=> {
+                    dialog::alert(0, 0, &format!("Error al guardar el contacto:\n{}", e));
+
+            }
+        }
+
+
     });
 }
 
