@@ -1,5 +1,6 @@
 
 use std::vec;
+use std::rc::Rc;
 
 use fltk::{
 
@@ -9,7 +10,7 @@ use fltk::dialog;
 use fltk_table::SmartTable;
 
 
-use crate::database::service::{update_contact,init_db};
+use crate::database::service::{delete_contact, init_db, update_contact};
 use crate::refresh_table;
 
 
@@ -24,7 +25,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
     // 5: Botones superiores (Label con los íconos internos de FLTK)
     let mut btn_editar = Button::new(20, 20, 30, 30, "@filesaveas");
     let mut _btn_guardar = Button::new(60, 20, 30, 30, "@filesave");
-    let _btn_borrar = Button::new(100,20,30,30,"Del");
+    let mut _btn_borrar = Button::new(100,20,30,30,"Borrar");
 
     // 2: Inputs (Dejamos 150px de margen a la izquierda para los labels)
 
@@ -40,6 +41,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
     let mut inp_correo = Input::new(x_input, 235, ancho_input, alto_input, "Correo:");
 
     let mut table_clone__ = table.clone();
+    let mut table_clone_eliminar = table.clone();
 
     // Ajuste opcional para alinear mejor los textos a la izquierda del input
     inp_codigo.set_align(Align::Left);
@@ -101,8 +103,8 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
 
 
 
-     let path = "db/contacts.db";
-    let conn__ = match init_db(path) {
+    let path = "db/contacts.db";
+    let  conn__ = match init_db(path) {
         Ok(c) => c,
         Err(e) => {
             eprintln!("Error al inicializar la base de datos: {}", e);
@@ -117,6 +119,11 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
     let inp_correo_clone = inp_correo.clone();
     let inp_nombre_clone = inp_nombre.clone();
     let inp_organizacion_clone = inp_organizacion.clone();
+
+    let inp_codigo_borrar =inp_codigo.value();
+    let  conn_shared__ = Rc::new(conn__);
+    let conn_shared_borrar = Rc::clone(&conn_shared__)
+;
 
 
 
@@ -134,11 +141,11 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
 
     _btn_guardar.set_callback(move |_|{
 
-        match update_contact(&conn__,inp_codigo_clone.parse().unwrap() , &inp_nombre_clone.value(), &inp_categoria_clone.value(), &inp_telefono_clone.value(), &txt_adicional_clone.value(), &inp_organizacion_clone.value(), &inp_correo_clone.value())
+        match update_contact(&conn_shared__,inp_codigo_clone.parse().unwrap() , &inp_nombre_clone.value(), &inp_categoria_clone.value(), &inp_telefono_clone.value(), &txt_adicional_clone.value(), &inp_organizacion_clone.value(), &inp_correo_clone.value())
         {
         Ok(_) => {
                 dialog::message(0, 0, "¡Contacto editado exitosamente");
-                refresh_table::refresh_table_(&mut table_clone__, &conn__);
+                refresh_table::refresh_table_(&mut table_clone__, &conn_shared__);
 
             }
             Err(e)=> {
@@ -146,8 +153,19 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
 
             }
         }
+    });
 
 
+    _btn_borrar.set_callback(move|_|{
+        match delete_contact(&conn_shared_borrar,inp_codigo_borrar.parse().unwrap()) {
+            Ok(_) => {
+                dialog::message(0, 0, "¡Contacto Borrado exitosamente");
+                refresh_table::refresh_table_(&mut table_clone_eliminar, &conn_shared_borrar);
+
+            }Err(e) => {
+                dialog::alert(0, 0,&format!("Error al guardar el contacto:\n{}", e));
+            }
+        }
     });
 }
 

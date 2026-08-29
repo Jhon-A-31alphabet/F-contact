@@ -233,3 +233,12 @@ pub fn get_contact_by_category(conn: &Connection, categoria: &str) -> Result<Vec
     
     Ok(resultados)
 }
+
+
+pub fn delete_contact(conn: &Connection,id :i64)-> Result<usize>{
+    let sql_query = "DELETE  FROM contacts WHERE id = ?1";
+    let mut stmt = conn.prepare(sql_query)?;
+    stmt.execute(params![id])
+
+}
+
