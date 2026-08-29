@@ -151,7 +151,7 @@ pub fn update_contact(
     conn: &Connection,
     id: i64,
     nombre: &str,
-    categoria: &i32,
+    categoria: &str,
     telefono: &str,
     descripcion: &str,
     organizacion: &str,
