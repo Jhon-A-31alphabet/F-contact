@@ -1,6 +1,6 @@
-# 📖 f-contact (Gestor de Contactos en Rust)
+# 📖 f-contact (FLTK CONTACT)
 
-Una aplicación de escritorio rápida y eficiente para la gestión de contactos, desarrollada completamente en **Rust**. Utiliza la biblioteca **FLTK** (`fltk-rs`) para una interfaz gráfica ligera y multiplataforma, y **SQLite** (`rusqlite`) para el almacenamiento seguro y local de los datos.
+Una aplicación de escritorio rápida y eficiente para la gestión de contactos, desarrollada completamente en **Rust**. Utiliza la biblioteca **FLTK** (`fltk-rs`) para una interfaz gráfica ligera y multiplataforma, y **SQLite** (`rusqlite`) para el almacenamiento seguro y local de los datos. Pensado en el minimalismo y para usarse en hardware modesto.
 
 ## 🚀 Preparar el proyecto
 
