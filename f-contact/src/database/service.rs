@@ -1,8 +1,20 @@
+//! Módulo de servicio para la gestión de base de datos SQLite y operaciones CRUD de contactos.
+
 #![allow(unused)]
 
 use rusqlite::{Connection, Result, Statement, StatementStatus::RePrepare, ffi::sqlite3_prepare, params};
 
-/// Inicializa la base de datos y crea la tabla contacts si no existe.
+/// Inicializa la base de datos en la ruta indicada y crea la tabla `contacts` si aún no existe.
+///
+/// # Parámetros
+/// - `db_path`: Ruta relativa o absoluta del archivo de base de datos SQLite.
+///
+/// # Retorno
+/// - `Result<Connection>`: Devuelve la conexión activa (`Connection`) o un error (`rusqlite::Error`).
+///
+/// # Funciones y Módulos Utilizados
+/// - `Connection::open()`: Abre o crea el archivo SQLite.
+/// - `conn.execute()`: Ejecuta la sentencia DDL `CREATE TABLE IF NOT EXISTS`.
 pub fn init_db(db_path: &str) -> Result<Connection> {
     let conn = Connection::open(db_path)?;
 
@@ -23,7 +35,23 @@ pub fn init_db(db_path: &str) -> Result<Connection> {
     Ok(conn)
 }
 
-/// Inserta un nuevo contacto utilizando una sentencia preparada (Prepared Statement).
+/// Inserta un nuevo registro de contacto en la base de datos.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a la base de datos SQLite.
+/// - `nombre`: Nombre completo del contacto.
+/// - `categoria`: Categoría del contacto.
+/// - `telefono`: Número telefónico.
+/// - `descripcion`: Notas o información adicional.
+/// - `organizacion`: Empresa o entidad.
+/// - `email`: Correo electrónico.
+///
+/// # Retorno
+/// - `Result<usize>`: Retorna el número de filas insertadas (1) o un error de SQLite.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Precompila la sentencia SQL de inserción con marcadores posicionales (`?1`, `?2`, etc.).
+/// - `stmt.execute()`: Ejecuta la inserción vinculando los parámetros recibidos.
 pub fn insert_contact(
     conn: &Connection,
     nombre: &str,
@@ -50,8 +78,20 @@ pub fn insert_contact(
     ])
 }
 
+/// Alias de tipo que define una tupla con los campos crudos de una fila de contacto `(id, nombre, categoria, descripcion, telefono, organizacion, email)`.
 pub type FilaContacto = (i64, String, String, String, String, String, String);
 
+/// Obtiene todos los contactos guardados en la tabla `contacts`.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a SQLite.
+///
+/// # Retorno
+/// - `Result<Vec<FilaContacto>>`: Un vector con tuplas `FilaContacto` o un error si la consulta falla.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la sentencia `SELECT * FROM contacts`.
+/// - `stmt.query_map()`: Mapea cada fila devuelta por la consulta SQL a la tupla `FilaContacto`.
 pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
 
     let mut stmt = conn.prepare("SELECT * FROM contacts")?;
@@ -74,6 +114,16 @@ pub fn fetch_all(conn:&Connection) -> Result<Vec<FilaContacto>> {
 
 }
 
+/// Cuenta el número total de filas registradas en la tabla de contactos.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a la base de datos.
+///
+/// # Retorno
+/// - `i32`: Retorna la cantidad total de registros o `0` si ocurre algún error.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.query_row()`: Ejecuta la consulta SQL `SELECT COUNT(*)` y extrae el resultado entero.
 pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas disponibles en la tabla...
     let sql = "SELECT COUNT(*) FROM contacts";
     
@@ -87,17 +137,37 @@ pub fn count_rows(conn: &Connection)-> i32 {  //retorna el numero de filas dispo
 }
 
 
+/// Estructura de datos que representa a un contacto dentro del sistema.
 #[derive(Debug)]
 pub struct  Contacto{
+    /// Identificador único autoincremental en la base de datos.
     pub id: i64,
+    /// Nombre del contacto.
     pub nombre: String,
+    /// Categoría asignada.
     pub categoria: String,
+    /// Descripción o notas sobre el contacto.
     pub descripcion: String,
+    /// Número de teléfono.
     pub telefono :String,
+    /// Nombre de la empresa u organización.
     pub organizacion:String,
+    /// Dirección de correo electrónico.
     pub email: String
 }
 
+/// Busca contactos en la base de datos cuyo nombre empiece con el texto proporcionado.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a SQLite.
+/// - `nombre`: Prefijo o texto a buscar.
+///
+/// # Retorno
+/// - `Result<Vec<Contacto>>`: Lista de estructuras `Contacto` encontradas o un error.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la consulta SQL usando el operador `LIKE ?1`.
+/// - `stmt.query_map()`: Construye instancias de la estructura `Contacto` por cada fila coincidente.
 pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Contacto>>{
 
     let sql_like_query = "SELECT * FROM contacts WHERE nombre LIKE ?1 ";
@@ -146,7 +216,24 @@ pub fn search(conn:&Connection,nombre: &str)-> Result<Vec<Contacto>>{
 
 
 
-/// Actualiza un contacto existente filtrando por su `id`.
+/// Actualiza los datos de un contacto existente filtrado por su `id`.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a la base de datos.
+/// - `id`: Identificador único del contacto a modificar.
+/// - `nombre`: Nuevo nombre.
+/// - `categoria`: Nueva categoría.
+/// - `telefono`: Nuevo número telefónico.
+/// - `descripcion`: Nueva descripción.
+/// - `organizacion`: Nueva organización.
+/// - `email`: Nuevo correo.
+///
+/// # Retorno
+/// - `Result<usize>`: Cantidad de registros modificados o error de SQLite.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la sentencia `UPDATE contacts SET ... WHERE id = ?7`.
+/// - `stmt.execute()`: Ejecuta la consulta de actualización con los parámetros proporcionados.
 pub fn update_contact(
     conn: &Connection,
     id: i64,
@@ -183,7 +270,18 @@ pub fn update_contact(
     ])
 }
 
-/// Obtiene un contacto específico por su ID y lo retorna en un vector,
+/// Obtiene los datos de un contacto específico buscando por su `id`.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a SQLite.
+/// - `id`: Identificador del contacto.
+///
+/// # Retorno
+/// - `Result<Vec<Contacto>>`: Vector que contiene el contacto hallado o un vector vacío si no existe.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la consulta `SELECT * FROM contacts WHERE id = ?1`.
+/// - `stmt.query_map()`: Convierte el registro coincidente en una instancia de `Contacto`.
 pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Contacto>> {
     let sql_query = "SELECT * FROM contacts WHERE id = ?1";
     let mut stmt = conn.prepare(sql_query)?;
@@ -210,6 +308,18 @@ pub fn get_contact_by_id(conn: &Connection, id: i64) -> Result<Vec<Contacto>> {
 
 
 
+/// Obtiene la lista de contactos que pertenecen a una categoría específica.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a SQLite.
+/// - `categoria`: Nombre exacto de la categoría a filtrar.
+///
+/// # Retorno
+/// - `Result<Vec<Contacto>>`: Vector con los contactos pertenecientes a la categoría dada.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la consulta `SELECT * FROM contacts WHERE categoria = ?1`.
+/// - `stmt.query_map()`: Recorre y mapea las filas devueltas a objetos `Contacto`.
 pub fn get_contact_by_category(conn: &Connection, categoria: &str) -> Result<Vec<Contacto>> {
     let sql_query = "SELECT * FROM contacts WHERE categoria = ?1";
     let mut stmt = conn.prepare(sql_query)?;
@@ -235,10 +345,21 @@ pub fn get_contact_by_category(conn: &Connection, categoria: &str) -> Result<Vec
 }
 
 
+/// Elimina un contacto de la base de datos utilizando su `id`.
+///
+/// # Parámetros
+/// - `conn`: Conexión activa a SQLite.
+/// - `id`: Identificador único del contacto a borrar.
+///
+/// # Retorno
+/// - `Result<usize>`: Cantidad de registros eliminados (1) o un error si falla.
+///
+/// # Funciones y Módulos Utilizados
+/// - `conn.prepare()`: Prepara la consulta `DELETE FROM contacts WHERE id = ?1`.
+/// - `stmt.execute()`: Borra el registro de la base de datos.
 pub fn delete_contact(conn: &Connection,id :i64)-> Result<usize>{
     let sql_query = "DELETE  FROM contacts WHERE id = ?1";
     let mut stmt = conn.prepare(sql_query)?;
     stmt.execute(params![id])
 
 }
-

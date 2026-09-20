@@ -1,9 +1,27 @@
+//! Módulo para actualizar la tabla de la interfaz gráfica a partir de resultados de una búsqueda de contactos.
+
 use rusqlite::Connection;
 use fltk_table::SmartTable;
 use fltk::prelude::WidgetExt;
 use crate::database;
 use database::service::{Contacto, search};
 
+/// Refresca el contenido de la tabla mostrando únicamente los contactos que coinciden con la búsqueda.
+///
+/// # Parámetros
+/// - `table`: Referencia mutable a la tabla `SmartTable`.
+/// - `conn`: Referencia a la conexión con la base de datos SQLite.
+/// - `vec`: Resultado con el vector de contactos obtenido de una consulta preliminar.
+///
+/// # Retorno
+/// - No retorna ningún valor (`()`).
+///
+/// # Funciones y Módulos Utilizados
+/// - `table.clear()`: Vacía la tabla antes de cargar la búsqueda.
+/// - `search`: Busca en la base de datos los contactos que coincidan con el nombre especificado.
+/// - `table.set_cell_value()`: Rena cada celda con las propiedades del objeto `Contacto`.
+/// - `table.redraw()`: Fuerza el rediseño visual de la tabla actualizada.
+/// - `fltk::dialog::alert`: Notifica al usuario en caso de error en la búsqueda o resultado inválido.
 pub fn refreshby_search(table: &mut SmartTable, conn: &Connection, vec: &Result<Vec<Contacto>, rusqlite::Error>) {
     table.clear();
 
@@ -42,4 +60,3 @@ pub fn refreshby_search(table: &mut SmartTable, conn: &Connection, vec: &Result<
 
     table.redraw();
 }
-

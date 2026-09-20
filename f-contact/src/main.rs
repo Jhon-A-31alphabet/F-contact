@@ -1,3 +1,4 @@
+//! Punto de entrada principal de la aplicación para gestión de contactos construida con FLTK y SQLite.
 
 use std::rc::Rc;
 use fltk::{app, button::Button, dialog, enums::FrameType, frame::Frame, group::{Pack, PackType}, input::Input, menu::Choice, prelude::*, window::Window};
@@ -19,7 +20,22 @@ mod refresh_table;
 mod refreshbysearch;
 
 
-
+/// Función principal que arranca la aplicación gráfica, crea la ventana primaria y gestiona los eventos del sistema.
+///
+/// # Retorno
+/// - No retorna ningún valor (`()`).
+///
+/// # Funciones y Módulos Utilizados
+/// - `app::App::default()` / `app.run()`: Inicia y ejecuta el ciclo de eventos de FLTK.
+/// - `ColorTheme::apply()`: Aplica un tema visual predefinido a la GUI.
+/// - `Window::new()` / `Frame::default()` / `Pack::new()`: Estructuran la ventana principal y la disposición de los elementos.
+/// - `Button::new()` / `Input::new()` / `Choice::new()`: Elementos interactivos para añadir, buscar y filtrar contactos.
+/// - `SmartTable::default()`: Componente de tabla que despliega la lista general de contactos.
+/// - `init_db`: Inicializa la base de datos SQLite en el archivo especificado.
+/// - `fetch_all`: Recupera la lista completa de contactos almacenados.
+/// - `search`: Realiza búsquedas por nombre o coincidencias de texto.
+/// - `get_contact_by_category`: Filtra los registros según la categoría seleccionada en la lista desplegable.
+/// - `get_contact_by_id`: Recupera un contacto específico al hacer clic en una celda de la tabla para editarlo.
 fn main() {
 	let db_path = "db/contacts.db";
     let conn = match init_db(db_path) {

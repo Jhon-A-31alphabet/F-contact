@@ -1,3 +1,5 @@
+//! Módulo que crea la ventana emergente para añadir nuevos contactos al sistema.
+
 #![allow(unused)]
 use fltk::{
     prelude::*,
@@ -17,7 +19,7 @@ use rusqlite::Connection;
 use crate::{database, refresh_table};
 use database::service::{init_db, insert_contact};
 
-// struct para dimensiones
+/// Estructura interna auxiliar para almacenar las dimensiones del contenedor de la ventana.
 struct PackSize {
     _x: u32,
     _y: u32,
@@ -25,7 +27,23 @@ struct PackSize {
     pack_height: u64,
 }
 
-// table: &mut SmartTable, conn_ : &Connection (según tu firma original)
+/// Despliega una ventana modal con formulario para crear y guardar un nuevo contacto.
+///
+/// # Parámetros
+/// - `table`: Referencia mutable a la tabla `SmartTable` de la ventana principal.
+/// - `conn_`: Referencia a la conexión de base de datos activa.
+///
+/// # Retorno
+/// - No retorna ningún valor (`()`).
+///
+/// # Funciones y Módulos Utilizados
+/// - `Window::default()` / `make_modal(true)`: Crea la ventana emergente de formulario modal.
+/// - `Pack::new()`: Organiza los controles de entrada de texto verticalmente.
+/// - `Input::default()`: Campos de entrada para ingresar nombre, teléfono, organización, correo y descripción.
+/// - `Choice::default()`: Menú desplegable para seleccionar la categoría del contacto.
+/// - `insert_contact`: Guarda el contacto en SQLite.
+/// - `refresh_table_`: Refresca la tabla principal tras agregar un registro.
+/// - `dialog::message` / `dialog::alert`: Informa el éxito o fracaso de la inserción.
 pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
     let mut table_clone_ = table.clone();
 
@@ -135,8 +153,3 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
         win.hide();
     });
 }
-
-
-
-
-

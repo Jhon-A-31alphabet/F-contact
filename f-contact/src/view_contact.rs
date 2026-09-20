@@ -1,3 +1,4 @@
+//! Módulo para la visualización, edición y eliminación de los detalles de un contacto existente.
 
 use std::vec;
 use std::rc::Rc;
@@ -13,7 +14,25 @@ use fltk_table::SmartTable;
 use crate::database::service::{delete_contact, init_db, update_contact};
 use crate::refresh_table;
 
-
+/// Muestra una ventana modal para visualizar, editar o eliminar la información detallada de un contacto.
+///
+/// # Parámetros
+/// - `contacto`: Referencia al contacto obtenido de la base de datos.
+/// - `table`: Referencia mutable a la tabla `SmartTable` de la interfaz para refrescarla tras cambios.
+///
+/// # Retorno
+/// - No retorna ningún valor (`()`).
+///
+/// # Funciones y Módulos Utilizados
+/// - `Window::default()` / `.make_modal()`: Crea la ventana flotante de vista/edición.
+/// - `Group::new()` / `FrameType::EmbossedFrame`: Define el marco contenedor visual para los widgets.
+/// - `Button::new()`: Crea los botones de la barra superior (editar, guardar, borrar).
+/// - `Input::new()` / `MultilineInput::new()`: Campos de entrada para desplegar y modificar datos del contacto.
+/// - `init_db`: Inicializa/conecta la base de datos SQLite para realizar consultas.
+/// - `update_contact`: Actualiza los registros del contacto en la base de datos SQLite.
+/// - `delete_contact`: Elimina el registro del contacto en la base de datos.
+/// - `refresh_table_`: Vuelve a cargar y dibujar la tabla principal con los datos actualizados.
+/// - `dialog::message` / `dialog::alert`: Muestran ventanas emergentes con avisos o mensajes de error.
 pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,mut table: &mut SmartTable){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
@@ -168,5 +187,3 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,m
         }
     });
 }
-
-

@@ -1,6 +1,5 @@
 branch := "main"
 
-
 # Instala las depencias partiendo del archivo Cargo.toml
 setup:
 	@echo  "-- installing dependencies  --"
