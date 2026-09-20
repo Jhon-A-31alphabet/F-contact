@@ -13,7 +13,7 @@ use fltk_theme::{ColorTheme, color_themes};
 
 
 mod database;
-use database::service::{init_db,fetch_all,count_rows,search,get_contact_by_category};
+use crate::database::service::{init_db,fetch_all,count_rows,search,get_contact_by_category};
 mod refresh_table;
 
 mod refreshbysearch;
