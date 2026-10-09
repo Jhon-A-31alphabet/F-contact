@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use fltk::{
 
-    button::Button, draw::width, enums::{Align, FrameType}, group::Group, input::{Input, MultilineInput}, prelude::*, table, window::Window,
+    button::Button, enums::{Align, FrameType}, group::Group, input::{Input, MultilineInput}, prelude::*, window::Window,
 };
 use fltk::dialog;
 use fltk_table::SmartTable;
@@ -33,7 +33,7 @@ use crate::refresh_table;
 /// - `delete_contact`: Elimina el registro del contacto en la base de datos.
 /// - `refresh_table_`: Vuelve a cargar y dibujar la tabla principal con los datos actualizados.
 /// - `dialog::message` / `dialog::alert`: Muestran ventanas emergentes con avisos o mensajes de error.
-pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto,mut table: &mut SmartTable){
+pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto, table: &mut SmartTable){
     // 1 & 3: Ventana de 550x450 con su título
     let mut view_and_edit_w = Window::default().with_size(600,500).with_label("Visualizacion de contacto");
 
