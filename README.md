@@ -18,7 +18,7 @@ Para poder trabajar con este proyecto, necesitas configurar tu entorno de desarr
    Si aún no tienes Rust instalado, descárgalo usando `rustup`:
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf [https://sh.rustup.rs](https://sh.rustup.rs) | sh
- ```
+ 
 
 2. **Dependencias del Sistema (Herramientas de compilación y X11):**
    Debes tener CMake y un compilador de C/C++ instalado en tu sistema.
