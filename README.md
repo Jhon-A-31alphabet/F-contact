@@ -2,6 +2,14 @@
 
 Una aplicación de escritorio rápida y eficiente para la gestión de contactos, desarrollada completamente en **Rust**. Utiliza la biblioteca **FLTK** (`fltk-rs`) para una interfaz gráfica ligera y multiplataforma, y **SQLite** (`rusqlite`) para el almacenamiento seguro y local de los datos. Pensado en el minimalismo y para usarse en hardware modesto.
 
+## 🖼️ Capturas de Pantalla
+
+| Vista Principal | Agregar Contactos | Visualización y Edición |
+| :---: | :---: | :---: |
+| ![Vista Principal](screenshots/Captura%20desde%202026-10-09%2015-43-42.png) | ![Agregar Contactos](screenshots/Captura%20desde%202026-10-09%2015-41-28.png) | ![Visualización de Contacto](screenshots/Captura%20desde%202026-10-09%2015-44-02.png) |
+
+---
+
 ## 🚀 Preparar el proyecto
 
 Para poder trabajar con este proyecto, necesitas configurar tu entorno de desarrollo. Gracias a que el proyecto utiliza las características `bundled` en su `Cargo.toml` tanto para FLTK como para SQLite, el proceso descarga y compila estas librerías automáticamente, pero aún requiere herramientas básicas de compilación y cabeceras gráficas en tu sistema.
@@ -9,8 +17,8 @@ Para poder trabajar con este proyecto, necesitas configurar tu entorno de desarr
 1. **Instalar Rust y Cargo:**
    Si aún no tienes Rust instalado, descárgalo usando `rustup`:
    ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
+   curl --proto '=https' --tlsv1.2 -sSf [https://sh.rustup.rs](https://sh.rustup.rs) | sh
+ ```
 
 2. **Dependencias del Sistema (Herramientas de compilación y X11):**
    Debes tener CMake y un compilador de C/C++ instalado en tu sistema.
