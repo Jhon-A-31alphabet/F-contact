@@ -6,7 +6,7 @@ Una aplicación de escritorio rápida y eficiente para la gestión de contactos,
 
 | Vista Principal | Agregar Contactos | Visualización y Edición |
 | :---: | :---: | :---: |
-| ![Vista Principal](screenshot/Captura desde 2026-10-15 20-53-43.png) | ![Agregar Contactos](screenshot/Captura%20desde%202026-10-09%2015-41-28.png) | ![Visualización de Contacto](screenshot/Captura%20desde%202026-10-09%2015-44-02.png) |
+| ![Vista Principal]("screenshot/Captura desde 2026-10-15 20-53-43.png") | ![Agregar Contactos](screenshot/Captura%20desde%202026-10-09%2015-41-28.png) | ![Visualización de Contacto](screenshot/Captura%20desde%202026-10-09%2015-44-02.png) |
 
 ---
 
