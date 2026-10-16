@@ -23,8 +23,7 @@ mod refresh_table;
 
 mod refreshbysearch;
 
-use include_dir::include_dir;
-const __: include_dir::Dir = include_dir!("$CARGO_MANIFEST_DIR/src/db");
+
 
 
 /// Función principal que arranca la aplicación gráfica, crea la ventana primaria y gestiona los eventos del sistema.
@@ -47,6 +46,17 @@ fn main() {
     rust_i18n::set_locale("es");
 
 	let db_path = "db/contacts.db";
+
+    // Crea el directorio contenedor de la base de datos solo si aún no existe.
+    if let Some(db_dir) = std::path::Path::new(db_path).parent() {
+        if !db_dir.exists() {
+            if let Err(e) = std::fs::create_dir_all(db_dir) {
+                eprintln!("{}", t!("errors.db_dir", error = e.to_string()));
+                return;
+            }
+        }
+    }
+
     let conn = match init_db(db_path) {
         Ok(c) => {
             c
