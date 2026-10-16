@@ -44,7 +44,7 @@ pub fn view_and_edit_contact_win(contacto: &crate::database::service::Contacto, 
     // 5: Botones superiores (Label con los íconos internos de FLTK)
     let mut btn_editar = Button::new(20, 20, 30, 30, "@filesaveas");
     let mut _btn_guardar = Button::new(60, 20, 30, 30, "@filesave");
-    let mut _btn_borrar = Button::new(100,20,30,30,"Borrar");
+    let mut _btn_borrar = Button::new(100,20,50,30,"Borrar");
 
     // 2: Inputs (Dejamos 150px de margen a la izquierda para los labels)
 

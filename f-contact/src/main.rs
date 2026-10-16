@@ -60,22 +60,28 @@ fn main() {
     let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, "Contactos"); // el tamano dependera de la resolucion
     //de la pantalla del usuario //
 
-    let pack_x = 115;
-    let pack_y = 40;
-    let btn_size = 50;
-    let input_w = 600;
-
-    let height = btn_size;
     let (center_frame_w,center_frame_h) =(screen_w as i32 -300 ,screen_h as i32 -250 ); //tamano del frame
 
     let mut center_frame = Frame::default().with_size(center_frame_w,center_frame_h).center_of(&wind);
     center_frame.set_frame(FrameType::EmbossedFrame);
 
+    let margin = 20;
+    let pack_x = center_frame.x() + margin;
+    let pack_y = center_frame.y() + margin;
+    let available_width = center_frame_w - (margin * 2);
+
+    let btn_size = 45;
+    let spacing = 12;
+    let height = btn_size;
+
+    let fixed_elements_width = (btn_size * 2) + 80 + 120 + (spacing * 4);
+    let input_w = available_width - fixed_elements_width;
 
 
-    let mut h_pack = Pack::new(pack_x, pack_y, btn_size + 30 + input_w + btn_size, height, "");
+
+    let mut h_pack = Pack::new(pack_x, pack_y, available_width, height, "");
     h_pack.set_type(PackType::Horizontal);
-    h_pack.set_spacing(20);
+    h_pack.set_spacing(spacing);
 
     // Boton para agregar
     let mut add_button = Button::new(0, 0, btn_size, height, "@+");
@@ -110,9 +116,12 @@ fn main() {
 
     
 
+    let table_y = pack_y + height + 15;
+    let table_h = center_frame_h - (table_y - center_frame.y()) - margin;
+
     let mut table = SmartTable::default()
-		.with_size(1000,390)
-		.center_of_parent()
+		.with_pos(pack_x, table_y)
+		.with_size(available_width,table_h)
 		.with_opts(TableOpts{
 		rows: count_rows(&conn)+1,
         cols: 7,
@@ -120,10 +129,11 @@ fn main() {
         ..Default::default()
 		});
 		(&mut table).set_col_header_height(32);
-		(&mut table).set_col_width(1,250);
-		(&mut table).set_col_width(0,250);
-		(&mut table).set_col_width(2,250);
-		(&mut table).set_col_width(3,250);
+		let col_w = available_width / 4;
+		(&mut table).set_col_width(0,col_w);
+		(&mut table).set_col_width(1,col_w);
+		(&mut table).set_col_width(2,col_w);
+		(&mut table).set_col_width(3,col_w);
 
 	    match fetch_all(&conn){
 		Ok(lista_contactos)=>{
