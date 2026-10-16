@@ -3,6 +3,7 @@
 use rusqlite::Connection;
 use fltk_table::SmartTable;
 use fltk::prelude::WidgetExt;
+use rust_i18n::t;
 use crate::database;
 use database::service::{Contacto, search};
 
@@ -47,14 +48,14 @@ pub fn refreshby_search(table: &mut SmartTable, conn: &Connection, vec: &Result<
                     }
                 }
                 Err(e) => {
-                    fltk::dialog::alert(0, 0, &format!("Error en la búsqueda: {}", e));
+                    fltk::dialog::alert(0, 0, &t!("errors.search", error = e.to_string()));
                 }
             }
         } else {
-            fltk::dialog::alert(0, 0, "Error la busqueda no pudo realizarse");
+            fltk::dialog::alert(0, 0, &t!("errors.search_failed"));
         }
     } else if let Err(e) = vec {
-        fltk::dialog::alert(0, 0, &format!("Error en el Result de origen: {}", e));
+        fltk::dialog::alert(0, 0, &t!("errors.result_origin", error = e.to_string()));
     }
 
 

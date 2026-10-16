@@ -4,7 +4,11 @@ use std::rc::Rc;
 use fltk::{app, button::Button, dialog, enums::FrameType, frame::Frame, group::{Pack, PackType}, input::Input, menu::Choice, prelude::*, window::Window};
 use fltk_table::{SmartTable, TableOpts};
 use fltk::enums::CallbackTrigger;
+use rust_i18n::t;
 
+rust_i18n::i18n!("locales", fallback = "es");
+
+mod i18n;
 
 mod add_contacts_window;
 use crate::add_contacts_window::add_contact_window;
@@ -18,6 +22,9 @@ use crate::database::service::{init_db,fetch_all,count_rows,search,get_contact_b
 mod refresh_table;
 
 mod refreshbysearch;
+
+use include_dir::include_dir;
+const __: include_dir::Dir = include_dir!("$CARGO_MANIFEST_DIR/src/db");
 
 
 /// Función principal que arranca la aplicación gráfica, crea la ventana primaria y gestiona los eventos del sistema.
@@ -37,13 +44,15 @@ mod refreshbysearch;
 /// - `get_contact_by_category`: Filtra los registros según la categoría seleccionada en la lista desplegable.
 /// - `get_contact_by_id`: Recupera un contacto específico al hacer clic en una celda de la tabla para editarlo.
 fn main() {
+    rust_i18n::set_locale("es");
+
 	let db_path = "db/contacts.db";
     let conn = match init_db(db_path) {
         Ok(c) => {
             c
         }
         Err(e) => {
-         eprintln!("Error al inicializar la base de datos: {}", e);
+         eprintln!("{}", t!("errors.db_init", error = e.to_string()));
             return;
         }
     };
@@ -57,7 +66,7 @@ fn main() {
     let color_theme = ColorTheme::new(color_themes::TAN_THEME);
     color_theme.apply(); // color del tema aplicado....
 
-    let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, "Contactos"); // el tamano dependera de la resolucion
+    let mut wind = Window::new(0, 0, screen_w as i32 - 250, screen_h  as i32 - 200, &*t!("app.title")); // el tamano dependera de la resolucion
     //de la pantalla del usuario //
 
     let (center_frame_w,center_frame_h) =(screen_w as i32 -300 ,screen_h as i32 -250 ); //tamano del frame
@@ -74,7 +83,11 @@ fn main() {
     let spacing = 12;
     let height = btn_size;
 
-    let fixed_elements_width = (btn_size * 2) + 80 + 120 + (spacing * 4);
+    let lang_label_w = 70;
+    let lang_choice_w = 110;
+
+    let fixed_elements_width =
+        (btn_size * 2) + 80 + 120 + lang_label_w + lang_choice_w + (spacing * 6);
     let input_w = available_width - fixed_elements_width;
 
 
@@ -98,19 +111,24 @@ fn main() {
     search_button.set_label_size(18);
 
     //categoria label
-    let mut cat_label =Frame::new(0,0,80,height,"Categorias");
+    let mut cat_label =Frame::new(0,0,80,height,&*t!("main.categories"));
     cat_label.set_label_size(18);
 
     let mut choice = Choice::new(0, 0, 120, height - 10, ""); // ancho 120, altura ajustada al pack
-    choice.add_choice("Todos|Trabajo|Fax del trabajo|Amistad|Familiar|Empresa|Servicio|Casa|Movil|Vendedor|Radio");  // aqui van las categorias
+    choice.add_choice(&i18n::category_choice_string());  // aqui van las categorias
 	choice.set_value(0);
 	choice.set_text_size(12);
 
-    
-	
+    // idioma label
+    let mut lang_label = Frame::new(0, 0, lang_label_w, height, &*t!("main.language"));
+    lang_label.set_label_size(18);
 
-
-
+    // selector de idioma
+    let mut lang_choice = Choice::new(0, 0, lang_choice_w, height - 10, "");
+    let lang_items = i18n::LOCALES.iter().map(|(_, name)| *name).collect::<Vec<_>>().join("|");
+    lang_choice.add_choice(&lang_items);
+    lang_choice.set_value(0);
+    lang_choice.set_text_size(12);
 
     h_pack.end(); // cierre del pack -------.
 
@@ -157,7 +175,7 @@ fn main() {
 		}
         
 	Err(e) => {
-        fltk::dialog::alert(0, 0, &format!("Error: {}", e));
+        dialog::alert(0, 0, &t!("errors.fetch_all", error = e.to_string()));
         }
  }  
 
@@ -213,54 +231,73 @@ fn main() {
     let conn_for_choice = conn_shared.clone();
 
     choice.set_callback(move |c| {
-        if let Some(selected_cat) = c.choice() {
-            
-            if selected_cat == "Todos" {
-                // AQUÍ MANEJAMOS LA TUPLA QUE DEVUELVE fetch_all()
-                match fetch_all(&conn_for_choice) {
-                    Ok(lista_contactos) => {
-                        table_for_choice.set_rows(lista_contactos.len() as i32);
-                        
-                        for (row_index, contacto) in lista_contactos.iter().enumerate() {
-                            let (id, nombre, categoria, descripcion, telefono, organizacion, email) = contacto;
-                            let row = row_index as i32;
-                            
-                            table_for_choice.set_cell_value(row, 0, &id.to_string());
-                            table_for_choice.set_cell_value(row, 1, nombre);
-                            table_for_choice.set_cell_value(row, 2, categoria);
-                            table_for_choice.set_cell_value(row, 3, telefono);
-                            table_for_choice.set_cell_value(row, 4, organizacion);
-                            table_for_choice.set_cell_value(row, 5, email);
-                            table_for_choice.set_cell_value(row, 6, descripcion);
-                        }
-                        table_for_choice.redraw();
-                    }
-                    Err(e) => fltk::dialog::alert(0, 0, &format!("Error al cargar todos: {}", e)),
-                }
+        let index = c.value();
 
-            } else {
-                // AQUÍ MANEJAMOS EL STRUCT "Usuario" QUE DEVUELVE get_contact_by_category()
-                match get_contact_by_category(&conn_for_choice, &selected_cat) {
-                    Ok(lista_contactos) => {
-                        table_for_choice.set_rows(lista_contactos.len() as i32);
-                        
-                        for (row_index, contacto) in lista_contactos.iter().enumerate() {
-                            let row = row_index as i32;
-                            
-                            table_for_choice.set_cell_value(row, 0, &contacto.id.to_string());
-                            table_for_choice.set_cell_value(row, 1, &contacto.nombre);
-                            table_for_choice.set_cell_value(row, 2, &contacto.categoria);
-                            table_for_choice.set_cell_value(row, 3, &contacto.telefono);
-                            table_for_choice.set_cell_value(row, 4, &contacto.organizacion);
-                            table_for_choice.set_cell_value(row, 5, &contacto.email);
-                            table_for_choice.set_cell_value(row, 6, &contacto.descripcion);
-                        }
-                        table_for_choice.redraw();
+        if index <= 0 {
+            // AQUÍ MANEJAMOS LA TUPLA QUE DEVUELVE fetch_all()
+            match fetch_all(&conn_for_choice) {
+                Ok(lista_contactos) => {
+                    table_for_choice.set_rows(lista_contactos.len() as i32);
+
+                    for (row_index, contacto) in lista_contactos.iter().enumerate() {
+                        let (id, nombre, categoria, descripcion, telefono, organizacion, email) = contacto;
+                        let row = row_index as i32;
+
+                        table_for_choice.set_cell_value(row, 0, &id.to_string());
+                        table_for_choice.set_cell_value(row, 1, nombre);
+                        table_for_choice.set_cell_value(row, 2, categoria);
+                        table_for_choice.set_cell_value(row, 3, telefono);
+                        table_for_choice.set_cell_value(row, 4, organizacion);
+                        table_for_choice.set_cell_value(row, 5, email);
+                        table_for_choice.set_cell_value(row, 6, descripcion);
                     }
-                    Err(e) => fltk::dialog::alert(0, 0, &format!("Error al filtrar categoría: {}", e)),
+                    table_for_choice.redraw();
                 }
+                Err(e) => dialog::alert(0, 0, &t!("errors.load_all", error = e.to_string())),
+            }
+        } else if let Some(db_cat) = i18n::CATEGORY_DB_VALUES.get((index - 1) as usize) {
+            // AQUÍ MANEJAMOS EL STRUCT "Usuario" QUE DEVUELVE get_contact_by_category()
+            match get_contact_by_category(&conn_for_choice, db_cat) {
+                Ok(lista_contactos) => {
+                    table_for_choice.set_rows(lista_contactos.len() as i32);
+
+                    for (row_index, contacto) in lista_contactos.iter().enumerate() {
+                        let row = row_index as i32;
+
+                        table_for_choice.set_cell_value(row, 0, &contacto.id.to_string());
+                        table_for_choice.set_cell_value(row, 1, &contacto.nombre);
+                        table_for_choice.set_cell_value(row, 2, &contacto.categoria);
+                        table_for_choice.set_cell_value(row, 3, &contacto.telefono);
+                        table_for_choice.set_cell_value(row, 4, &contacto.organizacion);
+                        table_for_choice.set_cell_value(row, 5, &contacto.email);
+                        table_for_choice.set_cell_value(row, 6, &contacto.descripcion);
+                    }
+                    table_for_choice.redraw();
+                }
+                Err(e) => dialog::alert(0, 0, &t!("errors.filter_category", error = e.to_string())),
             }
         }
+    });
+
+    // Selector de idioma: cambia el idioma activo y retraduce las etiquetas de la ventana principal.
+    let mut wind_for_lang = wind.clone();
+    let mut cat_label_for_lang = cat_label.clone();
+    let mut choice_for_lang = choice.clone();
+    let mut lang_label_for_lang = lang_label.clone();
+
+    lang_choice.set_callback(move |c| {
+        let index = c.value();
+        if let Some((code, _)) = i18n::LOCALES.get(index as usize) {
+            rust_i18n::set_locale(code);
+        }
+
+        wind_for_lang.set_label(&t!("app.title"));
+        cat_label_for_lang.set_label(&t!("main.categories"));
+        lang_label_for_lang.set_label(&t!("main.language"));
+
+        choice_for_lang.clear();
+        choice_for_lang.add_choice(&i18n::category_choice_string());
+        choice_for_lang.set_value(0);
     });
 
 
@@ -296,14 +333,14 @@ fn main() {
 
                                         view_and_edit_contact_win(contacto,&mut table_editar_ver_cont);
                                     } else {
-                                        dialog::message_default("Advertencia: La BD no devolvió ningún contacto con el ID leido");
+                                        dialog::message_default(&t!("errors.no_contact"));
                                     }
                                 },
-                                Err(_e) => dialog::message_default("Error al consultar la Base de Datos")
+                                Err(_e) => dialog::message_default(&t!("errors.query_db"))
                             }
                         },
                         Err(_e) => {
-                            dialog::message_default("categoria no detectada");
+                            dialog::message_default(&t!("errors.category_not_detected"));
                         }
                     }
 

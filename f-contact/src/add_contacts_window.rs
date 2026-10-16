@@ -15,8 +15,9 @@ use fltk::group::Group;
 use fltk::dialog;
 use fltk_table::SmartTable;
 use rusqlite::Connection;
+use rust_i18n::t;
 
-use crate::{database, refresh_table};
+use crate::{database, i18n, refresh_table};
 use database::service::{init_db, insert_contact};
 
 /// Estructura interna auxiliar para almacenar las dimensiones del contenedor de la ventana.
@@ -59,14 +60,14 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
     let conn = match init_db(db_path_) {
         Ok(c) => c,
         Err(e) => {
-            eprintln!("Error al inicializar la base de datos: {}", e);
+            eprintln!("{}", t!("errors.db_init", error = e.to_string()));
             return;
         }
     };
 
     let mut win = window::Window::default()
         .with_size(600, 500)
-        .with_label("Agregar contactos");
+        .with_label(&t!("add.title"));
     win.make_modal(true);
 
     let mut frame_add_contact = Group::new(10, 10, 530, 430, "");
@@ -88,31 +89,31 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
     pack.set_spacing(20);
 
     // 1. Nombre
-    let mut inp_name = Input::default().with_size(0, 35).with_label("Nombre:");
+    let mut inp_name = Input::default().with_size(0, 35).with_label(&t!("add.name"));
     inp_name.set_align(Align::Left);
 
     // 2. Descripción
-    let mut inp_desc = Input::default().with_size(0, 35).with_label("Descripción:");
+    let mut inp_desc = Input::default().with_size(0, 35).with_label(&t!("add.description"));
     inp_desc.set_align(Align::Left);
 
     // 3. Número de teléfono
-    let mut inp_tel = Input::default().with_size(0, 35).with_label("Número de teléfono:");
+    let mut inp_tel = Input::default().with_size(0, 35).with_label(&t!("add.phone"));
     inp_tel.set_align(Align::Left);
 
     // 4. Organización
-    let mut inp_org = Input::default().with_size(0, 35).with_label("Organización:");
+    let mut inp_org = Input::default().with_size(0, 35).with_label(&t!("add.organization"));
     inp_org.set_align(Align::Left);
 
     // 5. Email
-    let mut inp_email = Input::default().with_size(0, 35).with_label("Email:");
+    let mut inp_email = Input::default().with_size(0, 35).with_label(&t!("add.email"));
     inp_email.set_align(Align::Left);
 
-    // 6. Categoría (Choice)
-    let categorias = ["Trabajo","Fax del trabajo","Amistad","Familiar","Empresa","Servicio","Casa","Movil","Vendedor","Radio"];
+    // 6. Categoría (Choice): se muestran las etiquetas traducidas y se guarda el valor estable.
+    let categorias = i18n::CATEGORY_DB_VALUES;
 
-    let mut cho_cat = Choice::default().with_size(0, 35).with_label("Categoría:");
+    let mut cho_cat = Choice::default().with_size(0, 35).with_label(&t!("add.category"));
     cho_cat.set_align(Align::Left);
-    cho_cat.add_choice("Trabajo|Fax del trabajo|Amistad|Familiar|Empresa|Servicio|Casa|Movil|Vendedor|Radio");
+    cho_cat.add_choice(&i18n::category_labels().join("|"));
     cho_cat.set_value(0);
 
     pack.end();
@@ -139,11 +140,11 @@ pub fn add_contact_window(mut table: &mut SmartTable, conn_: &Connection) {
             &inp_email.value(),
         ) {
             Ok(_) => {
-                dialog::message(0, 0, "¡Contacto guardado exitosamente!");
+                dialog::message(0, 0, &t!("add.saved"));
                 refresh_table::refresh_table_(&mut table_clone_, &conn);
             }
             Err(e) => {
-                dialog::alert(0, 0, &format!("Error al guardar el contacto:\n{}", e));
+                dialog::alert(0, 0, &t!("add.save_error", error = e.to_string()));
             }
         }
     });

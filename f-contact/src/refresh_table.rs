@@ -1,6 +1,7 @@
 //! Módulo encargado de recargar y redibujar la tabla principal con todos los registros de contactos.
 
 use rusqlite::Connection;
+use rust_i18n::t;
 
 use fltk_table::{SmartTable};
 use crate::database;
@@ -48,7 +49,7 @@ pub fn refresh_table_(table:&mut SmartTable,conn:&Connection )
             
         }
         Err(e) => {
-            fltk::dialog::alert(0, 0, &format!("Error al actualizar tabla: {}", e));
+            fltk::dialog::alert(0, 0, &t!("errors.refresh_table", error = e.to_string()));
         }
     }table.redraw();  // redibujar la tabla
     }

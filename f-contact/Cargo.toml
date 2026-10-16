@@ -8,4 +8,10 @@ fltk = { version = "^1.5", features = ["fltk-bundled"] }
 fltk-table = "0.3"
 fltk-theme = "0.7.9"
 rusqlite = { version = "0.31.0", features = ["bundled"] }
+rust-i18n = "4.2.4"
+include_dir = "0.7" 
+
+[package.metadata.i18n]
+default-locale = "es"
+available-locales = ["es", "en", "fr", "pt", "ja"]
 
